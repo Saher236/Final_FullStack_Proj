@@ -1,5 +1,4 @@
 // client/src/components/AddProjectForm.js
-
 import React, { useState } from "react";
 import { api } from "../api";
 
@@ -13,6 +12,7 @@ export default function AddProjectForm({ onProjectAdded }) {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [message, setMessage] = useState(""); // ✅ הודעת הצלחה
 
   const change = (e) =>
     setFormData((f) => ({ ...f, [e.target.name]: e.target.value }));
@@ -21,6 +21,7 @@ export default function AddProjectForm({ onProjectAdded }) {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setMessage("");
     try {
       const res = await api.post("/projects", formData);
       onProjectAdded(res.data);
@@ -31,9 +32,10 @@ export default function AddProjectForm({ onProjectAdded }) {
         demo_link: "",
         image_url: "",
       });
+      setMessage("✅ Project added successfully!");
     } catch (err) {
       console.error(err);
-      setError("Failed to add project");
+      setError("❌ Failed to add project");
     } finally {
       setLoading(false);
     }
@@ -41,9 +43,11 @@ export default function AddProjectForm({ onProjectAdded }) {
 
   return (
     <div className="card p-3 mb-4">
-      <h4 className="mb-3">Add New Project</h4>
+      {message && <div className="alert alert-success">{message}</div>}
+      {error && <div className="alert alert-danger">{error}</div>}
+      
       <form onSubmit={submit} noValidate>
-        {/* 🔹 Title */}
+        {/* Title */}
         <div className="mb-3">
           <label className="form-label">Project Title</label>
           <input
@@ -56,7 +60,7 @@ export default function AddProjectForm({ onProjectAdded }) {
           />
         </div>
 
-        {/* 🔹 Description */}
+        {/* Description */}
         <div className="mb-3">
           <label className="form-label">Description</label>
           <textarea
@@ -70,7 +74,7 @@ export default function AddProjectForm({ onProjectAdded }) {
           />
         </div>
 
-        {/* 🔹 GitHub */}
+        {/* GitHub */}
         <div className="mb-3">
           <label className="form-label">GitHub Link</label>
           <input
@@ -83,7 +87,7 @@ export default function AddProjectForm({ onProjectAdded }) {
           />
         </div>
 
-        {/* 🔹 Demo */}
+        {/* Demo */}
         <div className="mb-3">
           <label className="form-label">Demo Link</label>
           <input
@@ -96,7 +100,7 @@ export default function AddProjectForm({ onProjectAdded }) {
           />
         </div>
 
-        {/* 🔹 Image */}
+        {/* Image */}
         <div className="mb-3">
           <label className="form-label">Project Image URL</label>
           <input
@@ -109,7 +113,7 @@ export default function AddProjectForm({ onProjectAdded }) {
           />
         </div>
 
-        {/* 🔹 Actions */}
+        {/* Actions */}
         <div className="d-flex gap-2">
           <button className="btn btn-primary" disabled={loading}>
             {loading ? "Adding..." : "Add Project"}
@@ -130,8 +134,6 @@ export default function AddProjectForm({ onProjectAdded }) {
             Clear
           </button>
         </div>
-
-        {error && <div className="alert alert-danger mt-3">{error}</div>}
       </form>
     </div>
   );

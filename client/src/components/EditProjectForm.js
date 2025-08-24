@@ -1,5 +1,4 @@
 // client/src/components/EditProjectForm.js
-
 import React, { useEffect, useState } from "react";
 import { api } from "../api";
 
@@ -11,6 +10,9 @@ export default function EditProjectForm({ project, onUpdate, onCancel }) {
     demo_link: "",
     image_url: "",
   });
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (project) {
@@ -29,12 +31,22 @@ export default function EditProjectForm({ project, onUpdate, onCancel }) {
 
   const submit = async (e) => {
     e.preventDefault();
+    setMessage("");
+    setError("");
+    setLoading(true);
     try {
       const { data } = await api.put(`/projects/${project.id}`, form);
-      onUpdate(data);
+      setMessage("✅ Project updated successfully!");
+      setLoading(false);
+
+      // מחכים 1.5 שניות כדי שהמשתמש יראה את ההודעה ורק אז סוגרים
+      setTimeout(() => {
+        onUpdate(data);
+      }, 1500);
     } catch (err) {
       console.error(err);
-      alert("Save failed");
+      setError("❌ Failed to update project");
+      setLoading(false);
     }
   };
 
@@ -42,10 +54,10 @@ export default function EditProjectForm({ project, onUpdate, onCancel }) {
 
   return (
     <div className="card p-3 mb-4">
-      {/* 🔹 כותרת דינאמית */}
-      <div className="d-flex justify-content-between align-items-start">
-      </div>
-      {/* 🔹 טופס */}
+      {/* 🔹 הודעות */}
+      {message && <div className="alert alert-success">{message}</div>}
+      {error && <div className="alert alert-danger">{error}</div>}
+
       <form onSubmit={submit}>
         {/* Title */}
         <div className="mb-3">
@@ -115,8 +127,8 @@ export default function EditProjectForm({ project, onUpdate, onCancel }) {
 
         {/* Actions */}
         <div className="d-flex gap-2">
-          <button className="btn btn-success" type="submit">
-            Save Changes
+          <button className="btn btn-success" type="submit" disabled={loading}>
+            {loading ? "Saving…" : "Save Changes"}
           </button>
           <button
             type="button"

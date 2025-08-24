@@ -9,7 +9,7 @@ export default function BlogPostPage() {
   const [post, setPost] = useState(null);
 
   useEffect(() => {
-    api.get(`/posts/slug/${slug}`).then(r => setPost(r.data)).catch(console.error);
+    api.get(`/posts/${slug}`).then(r => setPost(r.data)).catch(console.error);
   }, [slug]);
 
   if (!post) return <div className="container my-5">Loading…</div>;
@@ -18,7 +18,19 @@ export default function BlogPostPage() {
     <div className="container my-5">
       <h1>{post.title}</h1>
       <div className="text-muted mb-3">{new Date(post.created_at).toLocaleString()}</div>
-      {post.cover_image_url && <img className="img-fluid mb-3" src={post.cover_image_url} alt={post.title} />}
+      {/* {post.thumbnail && (
+        <img
+          className="img-fluid mb-3"
+          src={post.thumbnail}
+          alt={post.title}
+          style={{ maxHeight: "400px", objectFit: "cover", width: "100%" }}
+        />
+      )}
+       */}
+
+      {post.thumbnail && (
+        <img className="img-fluid mb-3 rounded" src={post.thumbnail} alt={post.title} />
+      )}
       <p>{post.content}</p>
     </div>
   );

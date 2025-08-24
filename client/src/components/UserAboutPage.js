@@ -1,37 +1,49 @@
-// client/src/components/UserAboutPage.js
-
+// src/components/UserAboutPage.js
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { api } from "../api";
+import axios from "axios";
 import UserSectionNav from "./UserSectionNav";
 
 export default function UserAboutPage() {
   const { userId } = useParams();
   const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    setErr(null);
-    api.get(`/profiles/user/${userId}`)
-      .then(res => setProfile(res.data))
-      .catch(e => { console.error(e); setErr("Failed to load profile"); })
-      .finally(() => setLoading(false));
+    axios
+      .get(`http://localhost:5000/api/profiles/user/${userId}`)
+      .then((r) => setProfile(r.data))
+      .catch(console.error);
   }, [userId]);
+
+  if (!profile) return <div className="container my-5">Loading…</div>;
+
+  // חישוב גיל מתוך שנת לידה
+  const age = profile.birth_year
+    ? new Date().getFullYear() - profile.birth_year
+    : null;
+
+  // טיפול במערך שפות
+  const languages = Array.isArray(profile.languages)
+    ? profile.languages
+    : typeof profile.languages === "string"
+    ? profile.languages.split(",")
+    : [];
 
   return (
     <div className="container my-5">
       <UserSectionNav userId={userId} active="about" />
-      <h1>About</h1>
+      <h1>About Me</h1>
+      <p>{profile.about || "No about info yet."}</p>
 
-      {loading && <p>Loading…</p>}
-      {err && <div className="alert alert-danger">{err}</div>}
-      {!loading && !err && (
-        <p style={{ whiteSpace: "pre-wrap" }}>
-          {profile?.about || "—"}
-        </p>
-      )}
+      <div className="mt-3">
+        {age && <p><strong>Age:</strong> {age}</p>}
+        {profile.location && <p><strong>Location:</strong> {profile.location}</p>}
+        {languages.length > 0 && (
+          <p>
+            <strong>Languages:</strong> {languages.join(", ")}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

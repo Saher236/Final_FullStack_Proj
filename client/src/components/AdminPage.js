@@ -1,3 +1,4 @@
+// client/src/components/AdminPage.js
 import React, { useEffect, useState } from "react";
 import { api } from "../api";
 import AddProjectForm from "./AddProjectForm";
@@ -5,13 +6,14 @@ import EditProjectForm from "./EditProjectForm";
 import AdminResumeSection from "./AdminResumeSection";
 import AdminMessagesSection from "./AdminMessagesSection";
 import AdminProfileSection from "./AdminProfileSection";
-import AdminBlogPage from "./AdminBlogPage"; // ייבוא דף ניהול הבלוג
+import AdminUserSection from "./AdminUserSection";  // ✅ חדש
+import AdminBlogPage from "./AdminBlogPage";
 
 export default function AdminPage() {
   const [projects, setProjects] = useState([]);
   const [error, setError] = useState(null);
   const [editingProject, setEditingProject] = useState(null);
-  const [activeSection, setActiveSection] = useState("profile"); // ברירת מחדל
+  const [activeSection, setActiveSection] = useState("user"); // ברירת מחדל
 
   const fetchProjects = () => {
     api
@@ -22,15 +24,10 @@ export default function AdminPage() {
         setError("Failed to load projects");
       });
   };
+
   useEffect(() => {
     fetchProjects();
   }, []);
-
-  // const handleLogout = () => {
-  //   localStorage.removeItem("token");
-  //   setAuthToken(null);
-  //   nav("/login", { replace: true });
-  // };
 
   const handleProjectAdded = (p) => setProjects((prev) => [p, ...prev]);
   const handleDelete = async (id) => {
@@ -53,42 +50,55 @@ export default function AdminPage() {
       {/* כותרת */}
       <div className="d-flex align-items-center justify-content-between mb-4">
         <h3 className="mb-0">Admin Panel</h3>
-        <div>
-          {/* <button className="btn btn-outline-secondary btn-sm" onClick={handleLogout}>
-            Logout
-          </button> */}
-        </div>
       </div>
 
       {/* טאבים */}
       <div className="card shadow-sm p-3 mb-4">
         <div className="d-flex flex-wrap gap-2 justify-content-center">
           <button
-            className={`btn ${activeSection === "profile" ? "btn-dark" : "btn-outline-dark"}`}
+            className={`btn ${
+              activeSection === "user" ? "btn-dark" : "btn-outline-dark"
+            }`}
+            onClick={() => setActiveSection("user")}
+          >
+            Account Settings
+          </button>
+          <button
+            className={`btn ${
+              activeSection === "profile" ? "btn-dark" : "btn-outline-dark"
+            }`}
             onClick={() => setActiveSection("profile")}
           >
             Your Profile
           </button>
           <button
-            className={`btn ${activeSection === "resume" ? "btn-dark" : "btn-outline-dark"}`}
+            className={`btn ${
+              activeSection === "resume" ? "btn-dark" : "btn-outline-dark"
+            }`}
             onClick={() => setActiveSection("resume")}
           >
             Your Resume
           </button>
           <button
-            className={`btn ${activeSection === "projects" ? "btn-dark" : "btn-outline-dark"}`}
+            className={`btn ${
+              activeSection === "projects" ? "btn-dark" : "btn-outline-dark"
+            }`}
             onClick={() => setActiveSection("projects")}
           >
             Projects
           </button>
           <button
-            className={`btn ${activeSection === "messages" ? "btn-dark" : "btn-outline-dark"}`}
+            className={`btn ${
+              activeSection === "messages" ? "btn-dark" : "btn-outline-dark"
+            }`}
             onClick={() => setActiveSection("messages")}
           >
             Contact Messages
           </button>
           <button
-            className={`btn ${activeSection === "blog" ? "btn-dark" : "btn-outline-dark"}`}
+            className={`btn ${
+              activeSection === "blog" ? "btn-dark" : "btn-outline-dark"
+            }`}
             onClick={() => setActiveSection("blog")}
           >
             Manage Blog
@@ -98,7 +108,17 @@ export default function AdminPage() {
 
       {error && <div className="alert alert-danger">{error}</div>}
 
-      {/* סקשן פרופיל */}
+      {/* ✅ Account Settings */}
+      {activeSection === "user" && (
+        <div className="card shadow-sm">
+          <div className="card-body">
+            <h5 className="card-title mb-3">Account Settings</h5>
+            <AdminUserSection />
+          </div>
+        </div>
+      )}
+
+      {/* Profile */}
       {activeSection === "profile" && (
         <div className="card shadow-sm">
           <div className="card-body">
@@ -108,7 +128,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* סקשן קורות חיים */}
+      {/* Resume */}
       {activeSection === "resume" && (
         <div className="card shadow-sm">
           <div className="card-body">
@@ -118,7 +138,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* סקשן פרויקטים */}
+      {/* Projects */}
       {activeSection === "projects" && (
         <div className="card shadow-sm">
           <div className="card-body">
@@ -147,8 +167,8 @@ export default function AdminPage() {
             )}
 
             <hr className="my-4" />
-
             <h5 className="card-title mb-3">Existing Projects</h5>
+
             {projects.length === 0 ? (
               <div className="text-muted">No projects yet.</div>
             ) : (
@@ -215,7 +235,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* סקשן הודעות צור קשר */}
+      {/* Contact Messages */}
       {activeSection === "messages" && (
         <div className="card shadow-sm">
           <div className="card-body">
@@ -225,7 +245,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* סקשן ניהול בלוג */}
+      {/* Blog */}
       {activeSection === "blog" && (
         <div className="card shadow-sm">
           <div className="card-body">
@@ -237,4 +257,3 @@ export default function AdminPage() {
     </div>
   );
 }
-  

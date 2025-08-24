@@ -19,7 +19,7 @@ export default function UserPortfolioPage() {
       .get(`http://localhost:5000/api/projects/user/${userId}`)
       .then(r => setProjects(r.data || []))
       .catch(() => {});
-  }, [userId]); // 👈 אין setProfile כאן
+  }, [userId]); 
 
   return (
     <div className="container my-5">

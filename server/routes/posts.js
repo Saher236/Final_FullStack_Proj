@@ -8,7 +8,7 @@ const router   = express.Router();
 // Public list
 router.get('/', async (req, res) => {
   const { rows } = await pool.query(
-    'SELECT id,title,slug,thumbnail,created_at,user_id FROM posts ORDER BY created_at DESC'
+    'SELECT id,title,slug,thumbnail,content,created_at,user_id FROM posts ORDER BY created_at DESC'
   );
   res.json(rows);
 });
@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 router.get('/user/:userId', async (req, res) => {
   const { userId } = req.params;
   const { rows } = await pool.query(
-    `SELECT id, title, slug, thumbnail, created_at, user_id
+    `SELECT id, title, slug, thumbnail,content, created_at, user_id
        FROM posts
       WHERE user_id = $1
       ORDER BY created_at DESC`,
@@ -40,7 +40,7 @@ router.use(auth);
 // שלי: רשימת פוסטים של האדמין המחובר
 router.get('/mine/list', async (req, res) => {
   const { rows } = await pool.query(
-    `SELECT id, title, slug, thumbnail, created_at, user_id
+    `SELECT id, title, slug, thumbnail,content, created_at, user_id
        FROM posts
       WHERE user_id = $1
       ORDER BY created_at DESC`,

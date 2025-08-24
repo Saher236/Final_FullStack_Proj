@@ -67,6 +67,8 @@ export default function ContactPage() {
   return (
     <div className="container my-5" style={{ maxWidth: 640 }}>
       <h1>Contact Me</h1>
+      <p className="lead">✨ Do you want to collaborate, ask questions, or just say hi?  
+        Choose one of us and send your message directly.:</p>
       {submitted && <div className="alert alert-success">Thank you!</div>}
       {serverError && <div className="alert alert-danger">{serverError}</div>}
 
