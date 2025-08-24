@@ -1,23 +1,33 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# === Node.js dependencies ===
+node_modules
+client/node_modules
+server/node_modules
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# === Build outputs ===
+build
+client/build
+server/build
+dist
 
-# testing
-/coverage
-
-# production
-/build
-
-# misc
-.DS_Store
+# === Environment files ===
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+client/.env
+server/.env
 
+# === Logs ===
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# === Misc ===
+.DS_Store
+.vscode
+.idea
+*.swp
+*.swo
