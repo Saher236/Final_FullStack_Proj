@@ -17,7 +17,7 @@ export default function HomePage() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/users`)
+      .get(`https://final-fullstack-proj.onrender.com/api/users`)
       .then((r) => setUsers(r.data || []))
       .catch((err) => console.error("Error fetching users:", err));
   }, []);
