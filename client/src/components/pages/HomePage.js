@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { api } from "../api";
 
 /**
  * HomePage
@@ -16,7 +17,7 @@ export default function HomePage() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/users")
+      .get(`${process.env.REACT_APP_API_URL}/users`)
       .then((r) => setUsers(r.data || []))
       .catch((err) => console.error("Error fetching users:", err));
   }, []);
