@@ -1,7 +1,8 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "http://localhost:5000/api",
+  baseURL: 'https://final-fullstack-proj.onrender.com/api',
+// baseURL: "http://localhost:5000/api",
 });
 
 // This function sets or removes the Authorization header
