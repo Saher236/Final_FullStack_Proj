@@ -22,7 +22,7 @@ export default function SkillsPage() {
         const skillsData = await Promise.all(
           users.map(async (u) => {
             const r = await axios.get(
-              `http://final-fullstack-proj.onrender.com/api/profiles/user/${u.id}/skills`
+              `https://final-fullstack-proj.onrender.com/api/profiles/user/${u.id}/skills`
             );
             return { ...u, skills: r.data.skills || [] };
           })
