@@ -18,7 +18,9 @@ export default function UserAboutPage() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/profiles/user/${userId}`)
+    //  .get(`http://localhost:5000/api/profiles/user/${userId}`)
+      .get(`https://final-fullstack-proj.onrender.com/api/profiles/user/${userId}`)
+    
       .then((r) => setProfile(r.data))
       .catch(console.error);
   }, [userId]);

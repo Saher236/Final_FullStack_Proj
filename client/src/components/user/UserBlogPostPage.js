@@ -17,7 +17,8 @@ export default function UserBlogPostPage() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/posts/user/${userId}/${slug}`)
+      .get(`https://final-fullstack-proj.onrender.com/api/posts/user/${userId}/${slug}`)    
+      //.get(`http://localhost:5000/api/posts/user/${userId}/${slug}`)
       .then((r) => setPost(r.data))
       .catch(console.error);
   }, [userId, slug]);

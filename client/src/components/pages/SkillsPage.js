@@ -15,13 +15,14 @@ export default function SkillsPage() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/users")
+      // .get("http://localhost:5000/api/users")
+      .get("https://final-fullstack-proj.onrender.com/api/users")
       .then(async (res) => {
         const users = res.data || [];
         const skillsData = await Promise.all(
           users.map(async (u) => {
             const r = await axios.get(
-              `http://localhost:5000/api/profiles/user/${u.id}/skills`
+              `http://final-fullstack-proj.onrender.com/api/profiles/user/${u.id}/skills`
             );
             return { ...u, skills: r.data.skills || [] };
           })

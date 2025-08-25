@@ -40,7 +40,7 @@ export default function UserPortfolioPage() {
       {resume && (
         <a
           className="btn btn-outline-primary"
-          href={`http://localhost:5000/api/resumes/user/${userId}/pdf`}
+          href={`https://final-fullstack-proj.onrender.com/api/resumes/user/${userId}/pdf`}
           target="_blank"
           rel="noreferrer"
         >
