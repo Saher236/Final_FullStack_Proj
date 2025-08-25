@@ -1,21 +1,13 @@
 // client/src/components/AboutPage.js
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { api } from "../api";  // 👈 שימוש ב־api.js
 
-/**
- * AboutPage
- * Displays information about all admins/users in the system.
- * Features:
- * - Fetches users from the API
- * - Shows avatar, name, username, and email (if available)
- */
 export default function AboutPage() {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/users")
+    api.get("/users")
       .then((r) => setUsers(r.data || []))
       .catch((err) => console.error("Error fetching users:", err));
   }, []);
