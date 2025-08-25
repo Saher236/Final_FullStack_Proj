@@ -20,11 +20,11 @@ export default function UserPortfolioPage() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/resumes/user/${userId}`)
+      .get(`https://final-fullstack-proj.onrender.com/api/resumes/user/${userId}`)
       .then((r) => setResume(r.data))
       .catch(() => {});
     axios
-      .get(`http://localhost:5000/api/projects/user/${userId}`)
+      .get(`https://final-fullstack-proj.onrender.com/api/projects/user/${userId}`)
       .then((r) => setProjects(r.data || []))
       .catch(() => {});
   }, [userId]);
