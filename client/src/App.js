@@ -1,72 +1,55 @@
 // client/src/App.js
-
 import React from "react";
-import { Routes, Route  } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
-import Navbar from "./components/Navbar";
-import HomePage           from "./components/HomePage";
-import AboutPage          from "./components/AboutPage";
-import SkillsPage         from "./components/SkillsPage";
-import ContactPage        from "./components/ContactPage";
-import BlogListPage       from "./components/BlogListPage";
-import BlogPostPage       from "./components/BlogPostPage";
-// import TeamPage           from "./components/TeamPage";
+import Navbar from "./components/common/Navbar";
+import HomePage from "./components/pages/HomePage";
+import AboutPage from "./components/pages/AboutPage";
+import SkillsPage from "./components/pages/SkillsPage";
+import ContactPage from "./components/pages/ContactPage";
 
-import UserPortfolioPage  from "./components/UserPortfolioPage";
-import UserAboutPage      from "./components/UserAboutPage";
-import UserSkillsPage     from "./components/UserSkillsPage";
-import UserBlogListPage   from "./components/UserBlogListPage";
-import UserProjectsPage   from "./components/UserProjectsPage";
-import UserProjectPage    from "./components/UserProjectPage";
+import BlogListPage from "./components/common/blog/BlogListPage";
+import BlogPostPage from "./components/common/blog/BlogPostPage";
 
-import LoginPage          from "./components/LoginPage";
-import AdminPage          from "./components/AdminPage";
-import AdminBlogPage      from "./components/AdminBlogPage";
-import ProtectedRoute     from "./components/ProtectedRoute";
-import NotFound           from "./components/NotFound";
+import UserPortfolioPage from "./components/user/UserPortfolioPage";
+import UserAboutPage from "./components/user/UserAboutPage";
+import UserSkillsPage from "./components/user/UserSkillsPage";
+import UserBlogListPage from "./components/user/UserBlogListPage";
+import UserProjectsPage from "./components/user/UserProjectsPage";
+import UserProjectPage from "./components/user/UserProjectPage";
+
+import LoginPage from "./components/auth/LoginPage";
+import AdminPage from "./components/admin/AdminPage";
+import AdminBlogPage from "./components/admin/AdminBlogPage";
+
+import ProtectedRoute from "./components/common/ProtectedRoute";
+import NotFound from "./components/common/NotFound";
 
 export default function App() {
   return (
     <>
-      {/* <nav className="navbar navbar-dark bg-dark navbar-expand">
-        <div className="container-fluid">
-          <Link className="navbar-brand" to="/">MyPortfolio</Link>
-          <ul className="navbar-nav">
-            <li className="nav-item"><Link className="nav-link" to="/">Home</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/about">About</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/skills">Skills</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/contact">Contact</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/blog">Blog</Link></li> */}
-            {/* <li className="nav-item"><Link className="nav-link" to="/team">Team</Link></li> */}
-          {/* </ul>
-          <div className="ms-auto">
-            <Link className="btn btn-outline-light me-2" to="/admin">Admin Panel</Link>
-            <Link className="btn btn-outline-secondary" to="/login">Login</Link>
-          </div>
-        </div>
-      </nav> */}
-
       <Navbar />
-
       <Routes>
-        {/* דפים כלליים */}
+        {/* Public pages */}
         <Route path="/" element={<HomePage />} />
-        {/* <Route path="/team" element={<TeamPage />} /> */}
         <Route path="/about" element={<AboutPage />} />
         <Route path="/skills" element={<SkillsPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/blog" element={<BlogListPage />} />
         <Route path="/blog/:slug" element={<BlogPostPage />} />
 
-        {/* דפים לכל משתמש */}
+        {/* User profile pages */}
         <Route path="/user/:userId" element={<UserPortfolioPage />} />
         <Route path="/user/:userId/about" element={<UserAboutPage />} />
         <Route path="/user/:userId/skills" element={<UserSkillsPage />} />
         <Route path="/user/:userId/blog" element={<UserBlogListPage />} />
         <Route path="/user/:userId/projects" element={<UserProjectsPage />} />
-        <Route path="/user/:userId/projects/:projectId" element={<UserProjectPage />} />
+        <Route
+          path="/user/:userId/projects/:projectId"
+          element={<UserProjectPage />}
+        />
 
-        {/* אדמין */}
+        {/* Admin panel */}
         <Route
           path="/admin"
           element={
@@ -84,7 +67,7 @@ export default function App() {
           }
         />
 
-        {/* לוגין + 404 */}
+        {/* Authentication and 404 */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -1,9 +1,11 @@
 // client/src/components/PostForm.js
 
 import React, { useEffect, useState } from "react";
-import { api } from "../api";
+import { api } from "../../../api";
 
-// פונקציה פשוטה ליצירת slug מהכותרת (אפשר להשאיר ריק ולמלא ידנית)
+/**
+ * Utility: Generate a slug from a string (used for blog URLs).
+ */
 function slugify(s = "") {
   return s
     .toString()
@@ -14,6 +16,14 @@ function slugify(s = "") {
     .replace(/-+/g, "-");
 }
 
+/**
+ * PostForm
+ * Form component used to create or edit blog posts.
+ * Features:
+ * - Add/edit title, slug, content, and thumbnail
+ * - Auto-generates slug from title if left empty
+ * - Supports cancel and save actions
+ */
 export default function PostForm({ post, onSave, onCancel }) {
   const [form, setForm] = useState({
     title: "",
@@ -22,6 +32,7 @@ export default function PostForm({ post, onSave, onCancel }) {
     thumbnail: "",
   });
 
+  // Load post into form if editing
   useEffect(() => {
     if (post) {
       setForm({
@@ -38,10 +49,10 @@ export default function PostForm({ post, onSave, onCancel }) {
   const change = (e) =>
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
+  // Save or update post
   const submit = async (e) => {
     e.preventDefault();
 
-    // אם לא הוזן slug, נייצר מהכותרת
     const payload = {
       ...form,
       slug: form.slug?.trim() ? form.slug.trim() : slugify(form.title),
@@ -52,6 +63,7 @@ export default function PostForm({ post, onSave, onCancel }) {
       const { data } = post
         ? await api.put(`/posts/${post.id}`, payload)
         : await api.post("/posts", payload);
+
       onSave(data);
       setForm({ title: "", slug: "", content: "", thumbnail: "" });
     } catch (err) {
@@ -62,7 +74,7 @@ export default function PostForm({ post, onSave, onCancel }) {
 
   return (
     <div className="card p-3 mb-4">
-      {/* 🔹 כותרת דינאמית */}
+      {/* Header */}
       <div className="d-flex justify-content-between align-items-start">
         <div>
           <h4 className="mb-1">
@@ -86,7 +98,7 @@ export default function PostForm({ post, onSave, onCancel }) {
       <hr />
 
       <form onSubmit={submit}>
-        {/* 🔹 Title */}
+        {/* Title */}
         <div className="mb-3">
           <label className="form-label">Title</label>
           <input
@@ -99,7 +111,7 @@ export default function PostForm({ post, onSave, onCancel }) {
           />
         </div>
 
-        {/* 🔹 Slug */}
+        {/* Slug */}
         <div className="mb-3">
           <label className="form-label">Slug (optional)</label>
           <input
@@ -111,7 +123,7 @@ export default function PostForm({ post, onSave, onCancel }) {
           />
         </div>
 
-        {/* 🔹 Content */}
+        {/* Content */}
         <div className="mb-3">
           <label className="form-label">Content</label>
           <textarea
@@ -125,7 +137,7 @@ export default function PostForm({ post, onSave, onCancel }) {
           />
         </div>
 
-        {/* 🔹 Thumbnail */}
+        {/* Thumbnail */}
         <div className="mb-3">
           <label className="form-label">Thumbnail URL (optional)</label>
           <input
@@ -138,7 +150,7 @@ export default function PostForm({ post, onSave, onCancel }) {
           />
         </div>
 
-        {/* 🔹 Actions */}
+        {/* Actions */}
         <div className="d-flex gap-2">
           <button className="btn btn-success" type="submit">
             {post ? "Save Changes" : "Add Post"}

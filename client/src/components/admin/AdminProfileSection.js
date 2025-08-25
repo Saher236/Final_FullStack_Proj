@@ -1,7 +1,18 @@
 // client/src/components/AdminProfileSection.js
-import React, { useEffect, useState } from "react";
-import { api } from "../api";
 
+import React, { useEffect, useState } from "react";
+import { api } from "../../api";
+
+/**
+ * AdminProfileSection
+ * Allows the admin to update their personal profile.
+ * Includes:
+ * - About
+ * - Skills
+ * - Year of Birth (with calculated age)
+ * - Location
+ * - Languages
+ */
 export default function AdminProfileSection() {
   const [form, setForm] = useState({
     about: "",
@@ -15,9 +26,11 @@ export default function AdminProfileSection() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  // Load current profile data
   useEffect(() => {
-    api.get("/profiles/mine")
-      .then(res => {
+    api
+      .get("/profiles/mine")
+      .then((res) => {
         if (res.data) {
           setForm({
             about: res.data.about || "",
@@ -30,26 +43,27 @@ export default function AdminProfileSection() {
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
-        setError("❌ Failed to load profile");
+        setError("Failed to load profile");
       })
       .finally(() => setLoading(false));
   }, []);
 
-  const change = e =>
-    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  const change = (e) =>
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
+  // Save profile data
   const handleSave = async () => {
     setSaving(true);
     setMessage("");
     setError("");
     try {
       await api.post("/profiles/mine", form);
-      setMessage("✅ Profile saved successfully!");
+      setMessage("Profile saved successfully!");
     } catch (err) {
       console.error(err);
-      setError("❌ Failed to save profile");
+      setError("Failed to save profile");
     } finally {
       setSaving(false);
     }
@@ -57,7 +71,7 @@ export default function AdminProfileSection() {
 
   if (loading) return <p>Loading profile…</p>;
 
-  // גיל מחושב
+  // Calculate age from birth_year
   const age = form.birth_year
     ? new Date().getFullYear() - parseInt(form.birth_year)
     : null;
@@ -66,7 +80,6 @@ export default function AdminProfileSection() {
     <div className="container mb-5">
       <h5>Your Profile (About & Skills)</h5>
 
-      {/* 🔹 הודעות */}
       {message && <div className="alert alert-success">{message}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
 
@@ -102,7 +115,9 @@ export default function AdminProfileSection() {
           value={form.birth_year}
           onChange={change}
         />
-        {age && <small className="text-muted">Calculated Age: {age} years</small>}
+        {age && (
+          <small className="text-muted">Calculated Age: {age} years</small>
+        )}
       </div>
 
       {/* Location */}

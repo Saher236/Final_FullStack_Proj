@@ -1,9 +1,18 @@
 // src/components/UserPortfolioPage.js
-import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import axios from 'axios';
-import UserSectionNav from './UserSectionNav';
 
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
+import UserSectionNav from "./UserSectionNav";
+
+/**
+ * UserPortfolioPage
+ * Main page of a user's portfolio.
+ * Features:
+ * - Shows resume (with PDF download)
+ * - Lists all user projects
+ * - Each project has links to GitHub, Live demo, and details page
+ */
 export default function UserPortfolioPage() {
   const { userId } = useParams();
   const [resume, setResume] = useState(null);
@@ -12,14 +21,13 @@ export default function UserPortfolioPage() {
   useEffect(() => {
     axios
       .get(`http://localhost:5000/api/resumes/user/${userId}`)
-      .then(r => setResume(r.data))
+      .then((r) => setResume(r.data))
       .catch(() => {});
-
     axios
       .get(`http://localhost:5000/api/projects/user/${userId}`)
-      .then(r => setProjects(r.data || []))
+      .then((r) => setProjects(r.data || []))
       .catch(() => {});
-  }, [userId]); 
+  }, [userId]);
 
   return (
     <div className="container my-5">
@@ -28,7 +36,7 @@ export default function UserPortfolioPage() {
       <h1>Portfolio & Resume</h1>
 
       <h4 className="mt-4">Resume</h4>
-      <pre style={{ whiteSpace: 'pre-wrap' }}>{resume?.content || '—'}</pre>
+      <pre style={{ whiteSpace: "pre-wrap" }}>{resume?.content || "—"}</pre>
       {resume && (
         <a
           className="btn btn-outline-primary"
@@ -42,7 +50,7 @@ export default function UserPortfolioPage() {
 
       <h4 className="mt-4">Projects</h4>
       <div className="row">
-        {projects.map(p => (
+        {projects.map((p) => (
           <div className="col-md-6 mb-3" key={p.id}>
             <div className="card p-3">
               <h5>{p.title}</h5>

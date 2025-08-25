@@ -1,8 +1,16 @@
 // client/src/components/AdminUserSection.js
 
 import React, { useEffect, useState } from "react";
-import { api } from "../api";
+import { api } from "../../api";
 
+/**
+ * AdminUserSection
+ * Handles user account settings for the logged-in admin.
+ * Includes:
+ * - Username and email
+ * - GitHub, LinkedIn, and avatar URL
+ * - Avatar preview
+ */
 export default function AdminUserSection() {
   const [form, setForm] = useState({
     username: "",
@@ -17,7 +25,7 @@ export default function AdminUserSection() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  // 📌 טוען את המשתמש המחובר
+  // Load logged-in user data
   useEffect(() => {
     api
       .get("/users/me")
@@ -36,6 +44,7 @@ export default function AdminUserSection() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Save user updates
   const handleSave = async () => {
     setSaving(true);
     setError(null);
@@ -58,6 +67,7 @@ export default function AdminUserSection() {
       {error && <div className="alert alert-danger">{error}</div>}
       {success && <div className="alert alert-success">Profile updated!</div>}
 
+      {/* Username */}
       <div className="mb-3">
         <label className="form-label">Username</label>
         <input
@@ -68,6 +78,7 @@ export default function AdminUserSection() {
         />
       </div>
 
+      {/* Email */}
       <div className="mb-3">
         <label className="form-label">Email</label>
         <input
@@ -79,6 +90,7 @@ export default function AdminUserSection() {
         />
       </div>
 
+      {/* GitHub */}
       <div className="mb-3">
         <label className="form-label">GitHub URL</label>
         <input
@@ -90,6 +102,7 @@ export default function AdminUserSection() {
         />
       </div>
 
+      {/* LinkedIn */}
       <div className="mb-3">
         <label className="form-label">LinkedIn URL</label>
         <input
@@ -101,6 +114,7 @@ export default function AdminUserSection() {
         />
       </div>
 
+      {/* Avatar */}
       <div className="mb-3">
         <label className="form-label">Avatar URL</label>
         <input

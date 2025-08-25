@@ -1,18 +1,28 @@
 // client/src/components/AdminResumeSection.js
-import React, { useEffect, useState } from "react";
-import { api } from "../api";
 
+import React, { useEffect, useState } from "react";
+import { api } from "../../api";
+
+/**
+ * AdminResumeSection
+ * Allows the admin to manage their resume.
+ * Features:
+ * - Create, update, and delete resume content
+ * - Load resume on component mount
+ */
 export default function AdminResumeSection() {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
-  const [message, setMessage] = useState(null);   // ✅ הודעת הצלחה
+  const [message, setMessage] = useState(null);
   const [exists, setExists] = useState(false);
 
+  // Load resume data
   useEffect(() => {
-    api.get("/resumes/mine")
-      .then(res => {
+    api
+      .get("/resumes/mine")
+      .then((res) => {
         if (res.data) {
           setContent(res.data.content || "");
           setExists(true);
@@ -22,6 +32,7 @@ export default function AdminResumeSection() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Save or update resume
   const handleSave = async () => {
     setSaving(true);
     setError(null);
@@ -29,15 +40,16 @@ export default function AdminResumeSection() {
     try {
       await api.post("/resumes", { content });
       setExists(true);
-      setMessage("✅ Resume saved successfully!");
+      setMessage("Resume saved successfully!");
     } catch (err) {
       console.error(err);
-      setError("❌ Failed to save resume");
+      setError("Failed to save resume");
     } finally {
       setSaving(false);
     }
   };
 
+  // Delete resume
   const handleDelete = async () => {
     if (!window.confirm("Delete your resume?")) return;
     setError(null);
@@ -46,10 +58,10 @@ export default function AdminResumeSection() {
       await api.delete("/resumes");
       setContent("");
       setExists(false);
-      setMessage("🗑️ Resume deleted successfully!");
+      setMessage("Resume deleted successfully!");
     } catch (err) {
       console.error(err);
-      setError("❌ Failed to delete resume");
+      setError("Failed to delete resume");
     }
   };
 
@@ -57,7 +69,6 @@ export default function AdminResumeSection() {
 
   return (
     <div className="container mb-5">
-      {/* ✅ הודעות */}
       {message && <div className="alert alert-success">{message}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
 
@@ -65,7 +76,7 @@ export default function AdminResumeSection() {
         className="form-control mb-3"
         rows="8"
         value={content}
-        onChange={e => setContent(e.target.value)}
+        onChange={(e) => setContent(e.target.value)}
       />
 
       <button
@@ -77,10 +88,7 @@ export default function AdminResumeSection() {
       </button>
 
       {exists && (
-        <button
-          className="btn btn-outline-danger"
-          onClick={handleDelete}
-        >
+        <button className="btn btn-outline-danger" onClick={handleDelete}>
           Delete Resume
         </button>
       )}

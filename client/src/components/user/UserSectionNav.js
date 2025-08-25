@@ -1,9 +1,17 @@
 // client/src/components/UserSectionNav.js
+
 import React from "react";
 import { Link } from "react-router-dom";
 
-
-export default function UserSectionNav({ userId, active}) {
+/**
+ * UserSectionNav
+ * Navigation bar for user portfolio sections.
+ * Features:
+ * - Provides quick links to Portfolio, About, Skills, Blog, Projects
+ * - Highlights the active section
+ * - Includes "Contact Me" button aligned to the right
+ */
+export default function UserSectionNav({ userId, active }) {
   const btn = (key, to, label, extraClass = "") => (
     <Link
       to={to}
@@ -13,8 +21,6 @@ export default function UserSectionNav({ userId, active}) {
     </Link>
   );
 
-  const contactLabel = "Contact Me";
-  
   return (
     <div className="d-flex gap-2 mb-3">
       {btn("portfolio", `/user/${userId}`, "Portfolio & Resume")}
@@ -23,12 +29,9 @@ export default function UserSectionNav({ userId, active}) {
       {btn("blog", `/user/${userId}/blog`, "Blog")}
       {btn("projects", `/user/${userId}/projects`, "All Projects")}
 
-      {/* Contact בצד ימין ובכחול */}
-      <Link
-        to={`/contact?user=${userId}`}
-        className="btn btn-primary ms-auto"
-      >
-        {contactLabel}
+      {/* Contact button on the right side */}
+      <Link to={`/contact?user=${userId}`} className="btn btn-primary ms-auto">
+        Contact Me
       </Link>
     </div>
   );

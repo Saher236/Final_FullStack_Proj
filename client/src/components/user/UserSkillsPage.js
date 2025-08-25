@@ -1,11 +1,18 @@
 // client/src/components/UserSkillsPage.js
 
-
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { api } from "../api";
+import { api } from "../../api";
 import UserSectionNav from "./UserSectionNav";
 
+/**
+ * UserSkillsPage
+ * Displays the skills of a specific user.
+ * Features:
+ * - Fetches profile data from API
+ * - Supports skills stored as array or string
+ * - Lists skills or shows a "No skills yet" message
+ */
 export default function UserSkillsPage() {
   const { userId } = useParams();
   const [profile, setProfile] = useState(null);
@@ -17,11 +24,14 @@ export default function UserSkillsPage() {
     setErr(null);
     api.get(`/profiles/user/${userId}`)
       .then(res => setProfile(res.data))
-      .catch(e => { console.error(e); setErr("Failed to load skills"); })
+      .catch(e => {
+        console.error(e);
+        setErr("Failed to load skills");
+      })
       .finally(() => setLoading(false));
   }, [userId]);
 
-  // תמיכה גם במחרוזת וגם במערך
+  // Parse skills into array of strings
   const skills = useMemo(() => {
     const raw = profile?.skills;
     if (!raw) return [];
@@ -31,15 +41,18 @@ export default function UserSkillsPage() {
 
   return (
     <div className="container my-5">
-      <UserSectionNav userId={userId} active="skills"  />
+      <UserSectionNav userId={userId} active="skills" />
       <h1>Skills</h1>
 
       {loading && <p>Loading…</p>}
       {err && <div className="alert alert-danger">{err}</div>}
+
       {!loading && !err && (
         skills.length ? (
           <ul>{skills.map((s, i) => <li key={i}>{s}</li>)}</ul>
-        ) : <p>No skills yet.</p>
+        ) : (
+          <p>No skills yet.</p>
+        )
       )}
     </div>
   );

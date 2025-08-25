@@ -1,14 +1,12 @@
 // server/routes/profiles.js
+// Profiles routes: public profile viewing + admin-only profile management
 const express  = require('express');
 const auth     = require('../middleware/auth');
 const createDB = require('../db');
 const pool     = createDB();
 const router   = express.Router();
 
-/**
- * Public: get a user's full profile (about, skills, birth_year, location, languages)
- * GET /api/profiles/user/:id
- */
+// Public: get full profile of a user
 router.get('/user/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -24,9 +22,7 @@ router.get('/user/:id', async (req, res) => {
   }
 });
 
-/**
- * Public: only the About field
- */
+// Public: about field only
 router.get('/user/:id/about', async (req, res) => {
   try {
     const { id } = req.params;
@@ -41,9 +37,7 @@ router.get('/user/:id/about', async (req, res) => {
   }
 });
 
-/**
- * Public: only the Skills field
- */
+// Public: skills field only
 router.get('/user/:id/skills', async (req, res) => {
   try {
     const { id } = req.params;
@@ -62,14 +56,10 @@ router.get('/user/:id/skills', async (req, res) => {
   }
 });
 
-/**
- * Protected routes
- */
+// Protected routes
 router.use(auth);
 
-/**
- * Get my profile
- */
+// Get profile of the logged-in admin
 router.get('/mine', async (req, res) => {
   try {
     const { rows } = await pool.query(
@@ -84,14 +74,12 @@ router.get('/mine', async (req, res) => {
   }
 });
 
-/**
- * Create/update my profile
- */
+// Create or update profile of the logged-in admin
 router.post('/mine', async (req, res) => {
   try {
     const { about, skills, birth_year, location, languages } = req.body;
 
-    // Update if exists
+    // Try to update if exists
     const upd = await pool.query(
       `UPDATE profiles
          SET about=$1, skills=$2, birth_year=$3, location=$4, languages=$5,
@@ -102,7 +90,7 @@ router.post('/mine', async (req, res) => {
     );
     if (upd.rows.length) return res.json(upd.rows[0]);
 
-    // Insert new
+    // Insert new profile
     const ins = await pool.query(
       `INSERT INTO profiles (user_id, about, skills, birth_year, location, languages)
        VALUES ($1,$2,$3,$4,$5,$6)

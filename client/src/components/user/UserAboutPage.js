@@ -4,6 +4,14 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import UserSectionNav from "./UserSectionNav";
 
+/**
+ * UserAboutPage
+ * Shows the "About Me" section of a specific user.
+ * Features:
+ * - Fetches user profile from API
+ * - Calculates age from birth year
+ * - Displays about text, location, and spoken languages
+ */
 export default function UserAboutPage() {
   const { userId } = useParams();
   const [profile, setProfile] = useState(null);
@@ -17,12 +25,10 @@ export default function UserAboutPage() {
 
   if (!profile) return <div className="container my-5">Loading…</div>;
 
-  // חישוב גיל מתוך שנת לידה
   const age = profile.birth_year
     ? new Date().getFullYear() - profile.birth_year
     : null;
 
-  // טיפול במערך שפות
   const languages = Array.isArray(profile.languages)
     ? profile.languages
     : typeof profile.languages === "string"
@@ -39,9 +45,7 @@ export default function UserAboutPage() {
         {age && <p><strong>Age:</strong> {age}</p>}
         {profile.location && <p><strong>Location:</strong> {profile.location}</p>}
         {languages.length > 0 && (
-          <p>
-            <strong>Languages:</strong> {languages.join(", ")}
-          </p>
+          <p><strong>Languages:</strong> {languages.join(", ")}</p>
         )}
       </div>
     </div>

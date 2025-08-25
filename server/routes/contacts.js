@@ -1,14 +1,13 @@
 // server/routes/contacts.js
-
+// Contact routes: public form submission + admin-only management
 const express = require('express');
-const auth    = require('../middleware/auth');  // 👈 זה ה-middleware שלך
+const auth    = require('../middleware/auth');
 const createDB = require('../db');
 const pool     = createDB();
 const router   = express.Router();
 
-// Public: anyone can submit
+// Public: anyone can submit a contact message
 router.post('/', async (req, res) => {
-
   const { name, email, message } = req.body;
   const user_id = Number(req.body.user_id);
 
@@ -28,7 +27,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Protected: only logged-in admin can see their own contacts
+// Protected: only the logged-in admin can view their own messages
 router.get('/mine', auth, async (req, res) => {
   const result = await pool.query(
     'SELECT * FROM contacts WHERE user_id = $1 ORDER BY created_at DESC',
@@ -37,8 +36,7 @@ router.get('/mine', auth, async (req, res) => {
   res.json(result.rows);
 });
 
-
-// Delete a contact (protected)
+// Protected: delete a message belonging to the logged-in admin
 router.delete('/:id', auth, async (req, res) => {
   const { id } = req.params;
   const { rows } = await pool.query(

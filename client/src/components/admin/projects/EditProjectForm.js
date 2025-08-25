@@ -1,59 +1,70 @@
-// client/src/components/AddProjectForm.js
-import React, { useState } from "react";
-import { api } from "../api";
+// client/src/components/admin/projects/EditProjectForm.js
 
-export default function AddProjectForm({ onProjectAdded }) {
-  const [formData, setFormData] = useState({
+import React, { useEffect, useState } from "react";
+import { api } from "../../../api";
+
+export default function EditProjectForm({ project, onUpdate, onCancel }) {
+  const [form, setForm] = useState({
     title: "",
     description: "",
     github_link: "",
     demo_link: "",
     image_url: "",
   });
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [message, setMessage] = useState(""); // ✅ הודעת הצלחה
+
+  useEffect(() => {
+    if (project) {
+      setForm({
+        title: project.title || "",
+        description: project.description || "",
+        github_link: project.github_link || "",
+        demo_link: project.demo_link || "",
+        image_url: project.image_url || "",
+      });
+    }
+  }, [project]);
 
   const change = (e) =>
-    setFormData((f) => ({ ...f, [e.target.name]: e.target.value }));
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
   const submit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
     setMessage("");
+    setError("");
+    setLoading(true);
     try {
-      const res = await api.post("/projects", formData);
-      onProjectAdded(res.data);
-      setFormData({
-        title: "",
-        description: "",
-        github_link: "",
-        demo_link: "",
-        image_url: "",
-      });
-      setMessage("✅ Project added successfully!");
+      const { data } = await api.put(`/projects/${project.id}`, form);
+      setMessage("Project updated successfully!");
+      setLoading(false);
+
+      setTimeout(() => {
+        onUpdate(data);
+      }, 1500);
     } catch (err) {
       console.error(err);
-      setError("❌ Failed to add project");
-    } finally {
+      setError("Failed to update project");
       setLoading(false);
     }
   };
+
+  if (!project) return null;
 
   return (
     <div className="card p-3 mb-4">
       {message && <div className="alert alert-success">{message}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
-      
-      <form onSubmit={submit} noValidate>
+
+      <form onSubmit={submit}>
         {/* Title */}
         <div className="mb-3">
           <label className="form-label">Project Title</label>
           <input
             className="form-control"
             name="title"
-            value={formData.title}
+            value={form.title}
             onChange={change}
             placeholder="Enter project title"
             required
@@ -67,7 +78,7 @@ export default function AddProjectForm({ onProjectAdded }) {
             className="form-control"
             rows="4"
             name="description"
-            value={formData.description}
+            value={form.description}
             onChange={change}
             placeholder="Brief description of the project"
             required
@@ -81,7 +92,7 @@ export default function AddProjectForm({ onProjectAdded }) {
             className="form-control"
             name="github_link"
             type="url"
-            value={formData.github_link}
+            value={form.github_link}
             onChange={change}
             placeholder="https://github.com/..."
           />
@@ -94,7 +105,7 @@ export default function AddProjectForm({ onProjectAdded }) {
             className="form-control"
             name="demo_link"
             type="url"
-            value={formData.demo_link}
+            value={form.demo_link}
             onChange={change}
             placeholder="https://your-live-demo.com"
           />
@@ -107,7 +118,7 @@ export default function AddProjectForm({ onProjectAdded }) {
             className="form-control"
             name="image_url"
             type="url"
-            value={formData.image_url}
+            value={form.image_url}
             onChange={change}
             placeholder="https://example.com/project.jpg"
           />
@@ -115,23 +126,15 @@ export default function AddProjectForm({ onProjectAdded }) {
 
         {/* Actions */}
         <div className="d-flex gap-2">
-          <button className="btn btn-primary" disabled={loading}>
-            {loading ? "Adding..." : "Add Project"}
+          <button className="btn btn-success" type="submit" disabled={loading}>
+            {loading ? "Saving…" : "Save Changes"}
           </button>
           <button
-            type="reset"
+            type="button"
             className="btn btn-outline-secondary"
-            onClick={() =>
-              setFormData({
-                title: "",
-                description: "",
-                github_link: "",
-                demo_link: "",
-                image_url: "",
-              })
-            }
+            onClick={onCancel}
           >
-            Clear
+            Cancel
           </button>
         </div>
       </form>

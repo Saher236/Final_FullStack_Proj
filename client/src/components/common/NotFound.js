@@ -1,6 +1,11 @@
 // client/src/components/NotFound.js
 
 import React from "react";
+
+/**
+ * NotFound
+ * Simple fallback page for unknown routes (404).
+ */
 export default function NotFound() {
   return (
     <div className="container my-5">

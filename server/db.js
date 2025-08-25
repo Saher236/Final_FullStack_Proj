@@ -1,5 +1,7 @@
+// // server/db.js
+// Database connection factory (local / render / cloud)
 const { Pool } = require('pg');
-require('dotenv').config(); // Load environment variables from .env
+require('dotenv').config();
 
 function createDB() {
   const environment = process.env.NODE_ENV || 'localdb';
@@ -32,7 +34,7 @@ function createDB() {
       ssl: { rejectUnauthorized: false },
     });
   }
-  
+
   return pool;
 }
 

@@ -1,20 +1,32 @@
 // client/src/components/AdminPage.js
+
 import React, { useEffect, useState } from "react";
-import { api } from "../api";
-import AddProjectForm from "./AddProjectForm";
-import EditProjectForm from "./EditProjectForm";
+import { api } from "../../api";
+import AddProjectForm from "./projects/AddProjectForm";
+import EditProjectForm from "./projects/EditProjectForm";
 import AdminResumeSection from "./AdminResumeSection";
 import AdminMessagesSection from "./AdminMessagesSection";
 import AdminProfileSection from "./AdminProfileSection";
-import AdminUserSection from "./AdminUserSection";  // ✅ חדש
+import AdminUserSection from "./AdminUserSection";
 import AdminBlogPage from "./AdminBlogPage";
 
+/**
+ * AdminPage
+ * The main admin dashboard that manages all sections:
+ * - Account settings
+ * - Profile (About & Skills)
+ * - Resume
+ * - Projects (CRUD)
+ * - Messages
+ * - Blog
+ */
 export default function AdminPage() {
   const [projects, setProjects] = useState([]);
   const [error, setError] = useState(null);
   const [editingProject, setEditingProject] = useState(null);
-  const [activeSection, setActiveSection] = useState("user"); // ברירת מחדל
+  const [activeSection, setActiveSection] = useState("user");
 
+  // Fetch projects for admin
   const fetchProjects = () => {
     api
       .get("/projects/mine")
@@ -29,6 +41,7 @@ export default function AdminPage() {
     fetchProjects();
   }, []);
 
+  // CRUD project handlers
   const handleProjectAdded = (p) => setProjects((prev) => [p, ...prev]);
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure?")) return;
@@ -47,12 +60,11 @@ export default function AdminPage() {
 
   return (
     <div className="container py-4">
-      {/* כותרת */}
       <div className="d-flex align-items-center justify-content-between mb-4">
         <h3 className="mb-0">Admin Panel</h3>
       </div>
 
-      {/* טאבים */}
+      {/* Section Tabs */}
       <div className="card shadow-sm p-3 mb-4">
         <div className="d-flex flex-wrap gap-2 justify-content-center">
           <button
@@ -108,7 +120,7 @@ export default function AdminPage() {
 
       {error && <div className="alert alert-danger">{error}</div>}
 
-      {/* ✅ Account Settings */}
+      {/* Sections */}
       {activeSection === "user" && (
         <div className="card shadow-sm">
           <div className="card-body">
@@ -118,7 +130,6 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Profile */}
       {activeSection === "profile" && (
         <div className="card shadow-sm">
           <div className="card-body">
@@ -128,7 +139,6 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Resume */}
       {activeSection === "resume" && (
         <div className="card shadow-sm">
           <div className="card-body">
@@ -138,7 +148,6 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Projects */}
       {activeSection === "projects" && (
         <div className="card shadow-sm">
           <div className="card-body">
@@ -235,7 +244,6 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Contact Messages */}
       {activeSection === "messages" && (
         <div className="card shadow-sm">
           <div className="card-body">
@@ -245,7 +253,6 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Blog */}
       {activeSection === "blog" && (
         <div className="card shadow-sm">
           <div className="card-body">

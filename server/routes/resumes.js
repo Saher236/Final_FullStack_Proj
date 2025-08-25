@@ -1,4 +1,5 @@
 // server/routes/resumes.js
+// Resume routes: public viewing + PDF export + admin-only management
 const express = require('express');
 const auth    = require('../middleware/auth');
 const createDB = require('../db');
@@ -6,7 +7,7 @@ const pool     = createDB();
 const router   = express.Router();
 const PDFDocument = require('pdfkit');
 
-// 🔹 Public: רשימת כל הרזיומים
+// Public: list all resumes
 router.get('/', async (req, res) => {
   const { rows } = await pool.query(
     'SELECT r.*,u.username FROM resumes r JOIN users u ON r.user_id=u.id'
@@ -14,7 +15,7 @@ router.get('/', async (req, res) => {
   res.json(rows);
 });
 
-// 🔹 Public: רזיומה לפי משתמש
+// Public: get resume by user
 router.get('/user/:userId', async (req, res) => {
   const { userId } = req.params;
   const { rows } = await pool.query(
@@ -24,7 +25,7 @@ router.get('/user/:userId', async (req, res) => {
   res.json(rows[0] || null);
 });
 
-// 🔹 Public: הורדת PDF
+// Public: download resume as PDF
 router.get('/user/:id/pdf', async (req, res) => {
   try {
     const { id } = req.params;
@@ -33,9 +34,7 @@ router.get('/user/:id/pdf', async (req, res) => {
       [id]
     );
 
-    if (!rows.length) {
-      return res.status(404).json({ error: 'Resume not found' });
-    }
+    if (!rows.length) return res.status(404).json({ error: 'Resume not found' });
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'inline; filename="resume.pdf"');
@@ -51,10 +50,10 @@ router.get('/user/:id/pdf', async (req, res) => {
   }
 });
 
-// 🔒 Protected routes (after auth)
+// Protected routes
 router.use(auth);
 
-// שלי (האדמין המחובר)
+// Get my resume
 router.get('/mine', async (req, res) => {
   const { rows } = await pool.query(
     'SELECT * FROM resumes WHERE user_id=$1',
@@ -63,7 +62,7 @@ router.get('/mine', async (req, res) => {
   res.json(rows[0] || null);
 });
 
-// Create/update resume
+// Create or update resume
 router.post('/', async (req, res) => {
   const { content } = req.body;
 
@@ -71,18 +70,16 @@ router.post('/', async (req, res) => {
     'UPDATE resumes SET content=$1, updated_at=CURRENT_TIMESTAMP WHERE user_id=$2 RETURNING *',
     [content, req.user.id]
   );
-
   if (upd.rows.length) return res.json(upd.rows[0]);
 
   const ins = await pool.query(
     'INSERT INTO resumes (user_id, content) VALUES ($1, $2) RETURNING *',
     [req.user.id, content]
   );
-
   res.status(201).json(ins.rows[0]);
 });
 
-// Delete resume
+// Delete my resume
 router.delete('/', async (req, res) => {
   const del = await pool.query(
     'DELETE FROM resumes WHERE user_id=$1 RETURNING *',

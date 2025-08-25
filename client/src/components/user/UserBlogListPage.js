@@ -1,9 +1,18 @@
 // client/src/components/UserBlogListPage.js
+
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { api } from "../api";
+import { api } from "../../api";
 import UserSectionNav from "./UserSectionNav";
 
+/**
+ * UserBlogListPage
+ * Displays all blog posts of a specific user.
+ * Features:
+ * - Fetches posts by userId
+ * - Shows thumbnail, title, date, preview
+ * - Links to full blog post
+ */
 export default function UserBlogListPage() {
   const { userId } = useParams();
   const [posts, setPosts] = useState([]);
@@ -35,12 +44,8 @@ export default function UserBlogListPage() {
         {posts.map((p) => (
           <div key={p.id} className="col-md-6">
             <div className="card h-100 shadow-sm d-flex flex-column">
-              {/* Thumbnail */}
               <img
-                src={
-                  p.thumbnail ||
-                  "https://via.placeholder.com/400x200?text=No+Image"
-                }
+                src={p.thumbnail || "https://via.placeholder.com/400x200?text=No+Image"}
                 alt={p.title}
                 className="card-img-top"
                 style={{ objectFit: "cover", height: "200px" }}
@@ -51,8 +56,6 @@ export default function UserBlogListPage() {
                 <p className="text-muted mb-2">
                   {new Date(p.created_at).toLocaleDateString()}
                 </p>
-
-                {/* Content preview */}
                 <p className="card-text flex-grow-1">
                   {p.content
                     ? p.content.length > 120
@@ -60,12 +63,7 @@ export default function UserBlogListPage() {
                       : p.content
                     : "No preview available..."}
                 </p>
-
-                {/* Read More button */}
-                <Link
-                  className="btn btn-primary mt-auto w-100"
-                  to={`/blog/${p.slug}`}
-                >
+                <Link className="btn btn-primary mt-auto w-100" to={`/blog/${p.slug}`}>
                   Read More →
                 </Link>
               </div>
