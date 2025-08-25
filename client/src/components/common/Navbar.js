@@ -1,11 +1,14 @@
+// client/src/components/common/Navbar.js
+
 // client/src/components/Navbar.js
 
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { Navbar as BsNavbar, Nav, Container, Button } from "react-bootstrap";
 
 /**
  * Navbar
- * Main navigation bar of the site.
+ * Main navigation bar of the site (Bootstrap version).
  * Features:
  * - Public links: Home, About, Skills, Contact, Blog
  * - Shows "Login" if not authenticated
@@ -22,66 +25,59 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
-      <NavLink className="navbar-brand" to="/">
-        MyPortfolio
-      </NavLink>
-      <div className="collapse navbar-collapse">
-        <ul className="navbar-nav me-auto">
-          <li className="nav-item">
-            <NavLink end className="nav-link" to="/">
-              Home
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/about">
-              About
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/skills">
-              Skills
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/contact">
-              Contact
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/blog">
-              Blog
-            </NavLink>
-          </li>
-        </ul>
+    <BsNavbar bg="dark" variant="dark" expand="lg" sticky="top">
+      <Container>
+        {/* Brand / Logo */}
+        <BsNavbar.Brand as={NavLink} to="/">
+          MyPortfolio
+        </BsNavbar.Brand>
 
-        {/* Auth section */}
-        <ul className="navbar-nav">
-          {token ? (
-            <>
-              <li className="nav-item">
-                <NavLink className="nav-link" to="/admin">
+        {/* Mobile Toggle */}
+        <BsNavbar.Toggle aria-controls="main-navbar" />
+        <BsNavbar.Collapse id="main-navbar">
+          {/* Public Links */}
+          <Nav className="me-auto">
+            <Nav.Link as={NavLink} end to="/">
+              Home
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/about">
+              About
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/skills">
+              Skills
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/contact">
+              Contact
+            </Nav.Link>
+            <Nav.Link as={NavLink} to="/blog">
+              Blog
+            </Nav.Link>
+          </Nav>
+
+          {/* Auth Section */}
+          <Nav>
+            {token ? (
+              <>
+                <Nav.Link as={NavLink} to="/admin">
                   Admin Panel
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <button
-                  className="btn btn-outline-light ms-2"
+                </Nav.Link>
+                <Button
+                  variant="outline-light"
+                  size="sm"
+                  className="ms-2"
                   onClick={handleLogout}
                 >
                   Logout
-                </button>
-              </li>
-            </>
-          ) : (
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/login">
+                </Button>
+              </>
+            ) : (
+              <Nav.Link as={NavLink} to="/login">
                 Login
-              </NavLink>
-            </li>
-          )}
-        </ul>
-      </div>
-    </nav>
+              </Nav.Link>
+            )}
+          </Nav>
+        </BsNavbar.Collapse>
+      </Container>
+    </BsNavbar>
   );
 }

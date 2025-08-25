@@ -37,17 +37,9 @@ export default function HomePage() {
           <div className="col-md-9">
             <h1 className="fw-bold">🚀 Welcome</h1>
             <p className="lead text-muted">
-              Explore our skills, projects, and professional journey in software
-              development.
+              Explore skills, projects, and journeys of passionate developers.  
+              Built with ❤️ using React + Node.js.
             </p>
-            <div className="d-flex gap-3 mt-3">
-              <a href="#team" className="btn btn-success px-4">
-                Meet the Team
-              </a>
-              <Link to="/contact" className="btn btn-outline-dark px-4">
-                Contact Us
-              </Link>
-            </div>
           </div>
         </div>
       </div>
