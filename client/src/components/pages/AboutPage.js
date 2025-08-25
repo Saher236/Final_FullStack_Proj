@@ -17,7 +17,7 @@ export default function AboutPage() {
   useEffect(() => {
     axios
       //.get("http://localhost:5000/api/users")
-      .get("http://final-fullstack-proj.onrender.com/api/users")
+      .get("https://final-fullstack-proj.onrender.com/api/users")
       .then((r) => setUsers(r.data || []))
       .catch((err) => console.error("Error fetching users:", err));
   }, []);
