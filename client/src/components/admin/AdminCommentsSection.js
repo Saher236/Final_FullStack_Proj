@@ -17,7 +17,7 @@ export default function AdminCommentsSection() {
 
   const fetchComments = () => {
     setLoading(true);
-    api.get("/comments/mine")
+    api.get("/comments/all")
       .then((res) => setComments(res.data || []))
       .catch((err) => {
         console.error("❌ Error loading comments:", err);
