@@ -47,6 +47,21 @@ router.get("/all", async (req, res) => {
   }
 });
 
+router.get('/mine', auth, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT c.*, p.user_id
+         FROM comments c
+         JOIN posts p ON c.post_id = p.id
+        ORDER BY c.created_at DESC`
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error("ADMIN FETCH ERROR:", err);
+    res.status(500).json({ error: 'DB fetch failed', details: err.message });
+  }
+});
+
 // GET /api/comments/:postId
 // Fetch only approved comments for a single post (public)
 router.get("/:postId", async (req, res) => {
