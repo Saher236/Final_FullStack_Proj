@@ -33,6 +33,7 @@ export default function SkillsPage() {
   }, []);
 
   return (
+    <div className="min-h-screen relative animated-bg">    
       <div className="max-w-6xl mx-auto px-6 py-16">
         <h1 className="text-4xl font-bold text-center mb-6">Skills</h1>
         <p className="text-lg text-gray-600 text-center mb-12">
@@ -59,5 +60,6 @@ export default function SkillsPage() {
           ))}
         </div>
       </div>
+    </div>
     );
 }

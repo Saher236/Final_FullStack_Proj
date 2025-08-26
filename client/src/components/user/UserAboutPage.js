@@ -22,16 +22,18 @@ export default function UserAboutPage() {
     : null;
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-10">
-      <UserSectionNav userId={userId} active="about" />
+    <div className="min-h-screen relative animated-bg">    
+      <div className="max-w-6xl mx-auto px-6 py-10">
+        <UserSectionNav userId={userId} active="about" />
 
-      <h1 className="text-3xl font-bold mb-6">About Me</h1>
+        <h1 className="text-3xl font-bold mb-6">About Me</h1>
 
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <p>{profile.about || "No about info yet."}</p>
-        {age && <p><strong>Age:</strong> {age}</p>}
-        {profile.location && <p><strong>Location:</strong> {profile.location}</p>}
-        {profile.languages && <p><strong>Languages:</strong> {profile.languages}</p>}
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <p>{profile.about || "No about info yet."}</p>
+          {age && <p><strong>Age:</strong> {age}</p>}
+          {profile.location && <p><strong>Location:</strong> {profile.location}</p>}
+          {profile.languages && <p><strong>Languages:</strong> {profile.languages}</p>}
+        </div>
       </div>
     </div>
   );

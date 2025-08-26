@@ -79,99 +79,101 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold mb-4">📬 Contact Us</h1>
-      <p className="text-gray-600 mb-8">
-        Want to collaborate, ask questions, or just say hi?  
-        Select one of our admins and send a direct message.
-      </p>
+    <div className="min-h-screen relative animated-bg">    
+      <div className="max-w-2xl mx-auto px-6 py-12">
+        <h1 className="text-3xl font-bold mb-4">📬 Contact Us</h1>
+        <p className="text-gray-600 mb-8">
+          Want to collaborate, ask questions, or just say hi?  
+          Select one of our admins and send a direct message.
+        </p>
 
-      {/* Success / Error Alerts */}
-      {submitted && (
-        <div className="mb-6 p-4 rounded-lg bg-green-100 text-green-800 border border-green-300">
-          ✅ Thank you! Your message has been sent.
-        </div>
-      )}
-      {serverError && (
-        <div className="mb-6 p-4 rounded-lg bg-red-100 text-red-800 border border-red-300">
-          ❌ {serverError}
-        </div>
-      )}
+        {/* Success / Error Alerts */}
+        {submitted && (
+          <div className="mb-6 p-4 rounded-lg bg-green-100 text-green-800 border border-green-300">
+            ✅ Thank you! Your message has been sent.
+          </div>
+        )}
+        {serverError && (
+          <div className="mb-6 p-4 rounded-lg bg-red-100 text-red-800 border border-red-300">
+            ❌ {serverError}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} noValidate className="space-y-6 bg-white p-6 rounded-xl shadow-md">
-        {/* Select admin */}
-        <div>
-          <label className="block text-gray-700 font-medium mb-2">Send to</label>
-          <select
-            name="user_id"
-            className={`w-full border rounded-md p-3 focus:ring focus:ring-indigo-200 ${
-              errors.user_id ? "border-red-500" : "border-gray-300"
-            }`}
-            value={form.user_id}
-            onChange={handleChange}
+        <form onSubmit={handleSubmit} noValidate className="space-y-6 bg-white p-6 rounded-xl shadow-md">
+          {/* Select admin */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">Send to</label>
+            <select
+              name="user_id"
+              className={`w-full border rounded-md p-3 focus:ring focus:ring-indigo-200 ${
+                errors.user_id ? "border-red-500" : "border-gray-300"
+              }`}
+              value={form.user_id}
+              onChange={handleChange}
+            >
+              <option value="">Choose admin…</option>
+              {admins.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.first_name} {a.last_name} (@{a.username})
+                </option>
+              ))}
+            </select>
+            {errors.user_id && <p className="text-red-500 text-sm mt-1">{errors.user_id}</p>}
+          </div>
+
+          {/* Name */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">Name</label>
+            <input
+              name="name"
+              type="text"
+              className={`w-full border rounded-md p-3 focus:ring focus:ring-indigo-200 ${
+                errors.name ? "border-red-500" : "border-gray-300"
+              }`}
+              value={form.name}
+              onChange={handleChange}
+            />
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">Email</label>
+            <input
+              name="email"
+              type="email"
+              className={`w-full border rounded-md p-3 focus:ring focus:ring-indigo-200 ${
+                errors.email ? "border-red-500" : "border-gray-300"
+              }`}
+              value={form.email}
+              onChange={handleChange}
+            />
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+          </div>
+
+          {/* Message */}
+          <div>
+            <label className="block text-gray-700 font-medium mb-2">Message</label>
+            <textarea
+              name="message"
+              rows="4"
+              className={`w-full border rounded-md p-3 focus:ring focus:ring-indigo-200 resize-none ${
+                errors.message ? "border-red-500" : "border-gray-300"
+              }`}
+              value={form.message}
+              onChange={handleChange}
+            />
+            {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-md font-semibold transition-smooth"
           >
-            <option value="">Choose admin…</option>
-            {admins.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.first_name} {a.last_name} (@{a.username})
-              </option>
-            ))}
-          </select>
-          {errors.user_id && <p className="text-red-500 text-sm mt-1">{errors.user_id}</p>}
-        </div>
-
-        {/* Name */}
-        <div>
-          <label className="block text-gray-700 font-medium mb-2">Name</label>
-          <input
-            name="name"
-            type="text"
-            className={`w-full border rounded-md p-3 focus:ring focus:ring-indigo-200 ${
-              errors.name ? "border-red-500" : "border-gray-300"
-            }`}
-            value={form.name}
-            onChange={handleChange}
-          />
-          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-        </div>
-
-        {/* Email */}
-        <div>
-          <label className="block text-gray-700 font-medium mb-2">Email</label>
-          <input
-            name="email"
-            type="email"
-            className={`w-full border rounded-md p-3 focus:ring focus:ring-indigo-200 ${
-              errors.email ? "border-red-500" : "border-gray-300"
-            }`}
-            value={form.email}
-            onChange={handleChange}
-          />
-          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-        </div>
-
-        {/* Message */}
-        <div>
-          <label className="block text-gray-700 font-medium mb-2">Message</label>
-          <textarea
-            name="message"
-            rows="4"
-            className={`w-full border rounded-md p-3 focus:ring focus:ring-indigo-200 resize-none ${
-              errors.message ? "border-red-500" : "border-gray-300"
-            }`}
-            value={form.message}
-            onChange={handleChange}
-          />
-          {errors.message && <p className="text-red-500 text-sm mt-1">{errors.message}</p>}
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-md font-semibold transition-smooth"
-        >
-          Send Message
-        </button>
-      </form>
+            Send Message
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
