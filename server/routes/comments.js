@@ -63,27 +63,6 @@ router.get("/:postId", async (req, res) => {
   }
 });
 
-
-/**
- * Protected: Admin – see all comments of his posts
- */
-router.get('/mine', auth, async (req, res) => {
-  try {
-    const { rows } = await pool.query(
-      `SELECT c.* 
-         FROM comments c
-         JOIN posts p ON c.post_id = p.id
-        WHERE p.user_id = $1
-        ORDER BY c.created_at DESC`,
-      [req.user.id]
-    );
-    res.json(rows);
-  } catch (err) {
-    console.error("ADMIN FETCH ERROR:", err);
-    res.status(500).json({ error: 'DB fetch failed', details: err.message });
-  }
-});
-
 /**
  * Protected: Approve a comment
  */

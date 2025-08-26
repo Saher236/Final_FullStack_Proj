@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { api } from "../../api";
 
-/**
+/** 
  * AdminCommentsSection
  * Admin panel section to manage blog post comments.
  *
@@ -54,9 +54,16 @@ export default function AdminCommentsSection() {
   if (loading) return <p>Loading comments…</p>;
   if (error) return <div className="alert alert-danger">{error}</div>;
 
+  const pendingCount = comments.filter((c) => !c.approved).length;
+
   return (
     <div className="container my-4">
-      <h5 className="mb-3 font-semibold text-lg">Manage Blog Comments</h5>
+      <h5 className="mb-3 font-semibold text-lg">
+        Manage Blog Comments {pendingCount > 0 && (
+          <span className="text-red-600">({pendingCount} pending)</span>
+        )}
+      </h5>
+
       {!comments.length ? (
         <p>No comments yet.</p>
       ) : (
@@ -71,8 +78,7 @@ export default function AdminCommentsSection() {
                   </span>
                   <p className="mb-1">{c.content}</p>
                   <small className="text-gray-500">
-                    Post ID: {c.post_id} |{" "}
-                    {c.approved ? "✅ Approved" : "⏳ Pending"}
+                    Post ID: {c.post_id} {c.approved ? "✅" : "⏳ Pending"}
                   </small>
                 </div>
                 <div className="flex gap-2">

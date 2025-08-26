@@ -36,18 +36,21 @@ export default function BlogListPage() {
             key={p.id}
             className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition hover-lift flex flex-col"
           >
-            {/* Thumbnail */}
-            {p.thumbnail ? (
+          {/* Thumbnail */}
+          {p.thumbnail ? (
+            <div className="h-48 bg-gray-100 flex items-center justify-center">
               <img
                 src={p.thumbnail}
                 alt={p.title}
-                className="w-full h-auto rounded-lg mb-6 shadow-md object-contain"
+                className="max-h-full max-w-full object-contain rounded-md"
               />
-            ) : (
-              <div className="h-48 flex items-center justify-center text-gray-400 bg-gray-100">
-                No image available
-              </div>
-            )}
+            </div>
+          ) : (
+            <div className="h-48 flex items-center justify-center text-gray-400 bg-gray-100">
+              No image available
+            </div>
+          )}
+
 
             {/* Post Content */}
             <div className="p-6 flex flex-col flex-grow">

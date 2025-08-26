@@ -24,9 +24,17 @@ export default function UserBlogListPage() {
         {posts.map((p) => (
           <div key={p.id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
             {p.thumbnail ? (
-              <img src={p.thumbnail} alt={p.title} className="h-48 object-cover w-full" />
+              <div className="h-48 bg-gray-100 flex items-center justify-center">
+                <img
+                  src={p.thumbnail}
+                  alt={p.title}
+                  className="max-h-full max-w-full object-contain rounded-md"
+                />
+              </div>
             ) : (
-              <div className="h-48 flex items-center justify-center bg-gray-100 text-gray-400">No image</div>
+              <div className="h-48 flex items-center justify-center bg-gray-100 text-gray-400">
+                No image
+              </div>
             )}
             <div className="p-4 flex flex-col flex-grow">
               <h5 className="text-lg font-bold">{p.title}</h5>
