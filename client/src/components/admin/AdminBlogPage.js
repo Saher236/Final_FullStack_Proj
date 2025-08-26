@@ -1,5 +1,4 @@
 // client/src/components/admin/AdminBlogPage.js
-
 import React, { useEffect, useState } from "react";
 import { api } from "../../api";
 import ProtectedRoute from "../common/ProtectedRoute";
@@ -19,7 +18,6 @@ function slugify(s = "") {
 
 /**
  * PostForm
- * Internal component for creating or editing a blog post.
  */
 function PostForm({ post, onSave, onCancel }) {
   const [form, setForm] = useState({
@@ -47,7 +45,6 @@ function PostForm({ post, onSave, onCancel }) {
 
   const submit = async (e) => {
     e.preventDefault();
-
     const payload = {
       ...form,
       slug: form.slug?.trim() ? form.slug.trim() : slugify(form.title),
@@ -68,77 +65,58 @@ function PostForm({ post, onSave, onCancel }) {
   };
 
   return (
-    <div className="card p-3 mb-4">
-      {/* Header */}
-      <div className="d-flex justify-content-between align-items-start">
-        <div>
-          <h4 className="mb-1">
-            {post ? `Edit Post: ${post.title}` : "Add New Post"}
-          </h4>
-          {post?.slug && (
-            <small className="text-muted">Slug: {post.slug}</small>
-          )}
-        </div>
-        {post && (
-          <button
-            type="button"
-            className="btn btn-sm btn-outline-secondary"
-            onClick={onCancel}
-          >
-            Cancel
-          </button>
-        )}
-      </div>
+    <div className="bg-white rounded-lg shadow p-6 mb-6">
+      <h3 className="text-lg font-semibold mb-4">
+        {post ? `Edit Post: ${post.title}` : "Add New Post"}
+      </h3>
 
-      <hr />
-
-      <form onSubmit={submit}>
+      <form onSubmit={submit} className="space-y-4">
         {/* Title */}
-        <div className="mb-3">
-          <label className="form-label">Title</label>
+        <div>
+          <label className="block text-sm font-medium mb-1">Title</label>
           <input
             name="title"
-            className="form-control"
+            className="w-full border rounded px-3 py-2"
             value={form.title}
             onChange={change}
-            placeholder="Enter the blog post title"
+            placeholder="Enter blog title"
             required
           />
         </div>
 
         {/* Slug */}
-        <div className="mb-3">
-          <label className="form-label">Slug (optional)</label>
+        <div>
+          <label className="block text-sm font-medium mb-1">Slug (optional)</label>
           <input
             name="slug"
-            className="form-control"
+            className="w-full border rounded px-3 py-2"
             value={form.slug}
             onChange={change}
-            placeholder="If left blank, will be generated from title"
+            placeholder="If left blank, will be generated automatically"
           />
         </div>
 
         {/* Content */}
-        <div className="mb-3">
-          <label className="form-label">Content</label>
+        <div>
+          <label className="block text-sm font-medium mb-1">Content</label>
           <textarea
             name="content"
-            className="form-control"
-            rows="6"
+            rows="5"
+            className="w-full border rounded px-3 py-2"
             value={form.content}
             onChange={change}
-            placeholder="Write the blog post content here..."
+            placeholder="Write the blog content here..."
             required
           />
         </div>
 
         {/* Thumbnail */}
-        <div className="mb-3">
-          <label className="form-label">Thumbnail URL (optional)</label>
+        <div>
+          <label className="block text-sm font-medium mb-1">Thumbnail URL</label>
           <input
             name="thumbnail"
             type="url"
-            className="form-control"
+            className="w-full border rounded px-3 py-2"
             value={form.thumbnail}
             onChange={change}
             placeholder="https://example.com/image.jpg"
@@ -146,14 +124,17 @@ function PostForm({ post, onSave, onCancel }) {
         </div>
 
         {/* Actions */}
-        <div className="d-flex gap-2">
-          <button className="btn btn-success" type="submit">
+        <div className="flex gap-2">
+          <button
+            className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+            type="submit"
+          >
             {post ? "Save Changes" : "Add Post"}
           </button>
           {onCancel && (
             <button
               type="button"
-              className="btn btn-outline-secondary"
+              className="px-4 py-2 border rounded hover:bg-gray-100"
               onClick={onCancel}
             >
               Cancel
@@ -167,7 +148,6 @@ function PostForm({ post, onSave, onCancel }) {
 
 /**
  * AdminBlogPage
- * Allows admin to manage blog posts (CRUD).
  */
 export default function AdminBlogPage() {
   const [posts, setPosts] = useState([]);
@@ -175,7 +155,6 @@ export default function AdminBlogPage() {
   const [message, setMessage] = useState("");
   const [editingPost, setEditingPost] = useState(null);
 
-  // Fetch posts on page load
   const fetchPosts = () => {
     api
       .get("/posts/mine/list")
@@ -187,7 +166,6 @@ export default function AdminBlogPage() {
     fetchPosts();
   }, []);
 
-  // Save new or updated post
   const handleSave = (updated) => {
     if (editingPost) {
       setPosts((ps) => ps.map((p) => (p.id === updated.id ? updated : p)));
@@ -197,10 +175,8 @@ export default function AdminBlogPage() {
       setMessage("✅ Post created successfully!");
     }
     setEditingPost(null);
-    setError("");
   };
 
-  // Delete a post
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this post?")) return;
     try {
@@ -214,52 +190,46 @@ export default function AdminBlogPage() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg">
-        {message && (
-          <div className="mb-4 p-3 rounded-md bg-green-100 text-green-700">
-            {message}
-          </div>
-        )}
-        {error && (
-          <div className="mb-4 p-3 rounded-md bg-red-100 text-red-700">
-            {error}
-          </div>
-        )}
+      <div className="max-w-4xl mx-auto p-6">
+        {message && <div className="mb-4 p-3 rounded bg-green-100 text-green-700">{message}</div>}
+        {error && <div className="mb-4 p-3 rounded bg-red-100 text-red-700">{error}</div>}
 
-        {/* Post Form */}
         <PostForm
           post={editingPost}
           onSave={handleSave}
           onCancel={() => setEditingPost(null)}
         />
 
-        {/* Posts List */}
-        <ul className="mt-6 divide-y divide-gray-200">
-          {posts.map((p) => (
-            <li key={p.id} className="flex justify-between items-center py-3">
-              <span className="font-medium">
-                {p.title} <small className="text-gray-500">({p.slug})</small>
-              </span>
-              <div className="flex gap-2">
-                <button
-                  className="px-3 py-1 text-sm rounded-md bg-blue-500 text-white hover:bg-blue-600"
-                  onClick={() => setEditingPost(p)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="px-3 py-1 text-sm rounded-md bg-red-500 text-white hover:bg-red-600"
-                  onClick={() => handleDelete(p.id)}
-                >
-                  Delete
-                </button>
-              </div>
-            </li>
-          ))}
-          {!posts.length && (
-            <li className="py-3 text-gray-500 text-center">No posts yet.</li>
+        <div className="bg-white shadow rounded-lg p-4">
+          <h4 className="text-lg font-semibold mb-3">Your Posts</h4>
+          {posts.length === 0 ? (
+            <p className="text-gray-500">No posts yet.</p>
+          ) : (
+            <ul className="divide-y">
+              {posts.map((p) => (
+                <li key={p.id} className="flex justify-between items-center py-3">
+                  <span className="font-medium">
+                    {p.title} <small className="text-gray-500">({p.slug})</small>
+                  </span>
+                  <div className="flex gap-2">
+                    <button
+                      className="px-3 py-1 text-sm rounded bg-blue-500 text-white hover:bg-blue-600"
+                      onClick={() => setEditingPost(p)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="px-3 py-1 text-sm rounded bg-red-500 text-white hover:bg-red-600"
+                      onClick={() => handleDelete(p.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
           )}
-        </ul>
+        </div>
       </div>
     </ProtectedRoute>
   );

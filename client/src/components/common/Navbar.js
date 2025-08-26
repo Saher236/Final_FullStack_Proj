@@ -21,10 +21,10 @@ export default function Navbar() {
 
   const navItems = [
     { name: "Home", path: "/", icon: Home },
-    { name: "About", path: "/about", icon: Info },
+    { name: "About Us", path: "/about", icon: Info },
     { name: "Skills", path: "/skills", icon: Briefcase },
     { name: "Contact", path: "/contact", icon: MessageCircle },
-    { name: "Blog", path: "/blog", icon: BookOpen },
+    { name: "Blogs", path: "/blog", icon: BookOpen },
   ];
 
   return (

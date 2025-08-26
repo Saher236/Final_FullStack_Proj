@@ -73,10 +73,6 @@ export default function AdminProjectForm({ project, onSave, onCancel }) {
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md mb-6">
-      <h5 className="text-lg font-bold mb-4">
-        {isEditing ? "Edit Project" : "Add New Project"}
-      </h5>
-
       {message && <div className="p-2 mb-3 bg-green-100 text-green-700 rounded">{message}</div>}
       {error && <div className="p-2 mb-3 bg-red-100 text-red-700 rounded">{error}</div>}
 
