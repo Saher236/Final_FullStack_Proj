@@ -33,22 +33,36 @@ router.post("/", async (req, res) => {
 });
 
 
-/**
- * Public: Get comments for a post
- */
-router.get('/:postId', async (req, res) => {
-  const { postId } = req.params;
+// GET /api/comments/all
+// Fetch all comments (approved + pending) for admin
+router.get("/all", async (req, res) => {
   try {
-    const { rows } = await pool.query(
-      `SELECT * FROM comments WHERE post_id = $1 AND approved = true ORDER BY created_at DESC`,
-      [postId]
+    const result = await pool.query(
+      "SELECT * FROM comments ORDER BY created_at DESC"
     );
-    res.json(rows);
+    res.json(result.rows);
   } catch (err) {
-    console.error("COMMENT FETCH ERROR:", err);
-    res.status(500).json({ error: 'DB fetch failed', details: err.message });
+    console.error("❌ Error fetching all comments:", err.message);
+    res.status(500).json({ error: "Failed to fetch comments" });
   }
 });
+
+// GET /api/comments/:postId
+// Fetch only approved comments for a single post (public)
+router.get("/:postId", async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const result = await pool.query(
+      "SELECT * FROM comments WHERE post_id=$1 AND approved=true ORDER BY created_at DESC",
+      [postId]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("❌ Error fetching comments:", err.message);
+    res.status(500).json({ error: "Failed to fetch comments" });
+  }
+});
+
 
 /**
  * Protected: Admin – see all comments of his posts

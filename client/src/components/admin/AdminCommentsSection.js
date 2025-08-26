@@ -6,8 +6,7 @@ import { api } from "../../api";
  * AdminCommentsSection
  * Admin panel section to manage blog post comments.
  *
- * Features:
- * - Loads all comments for posts owned by the admin
+ * - Loads all comments (approved + pending)
  * - Approve comments
  * - Delete comments
  */
@@ -16,13 +15,12 @@ export default function AdminCommentsSection() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Load comments from API
   const fetchComments = () => {
     setLoading(true);
     api.get("/comments/all")
       .then((res) => setComments(res.data || []))
       .catch((err) => {
-        console.error("Error loading comments:", err);
+        console.error("❌ Error loading comments:", err);
         setError("Failed to load comments");
       })
       .finally(() => setLoading(false));
@@ -32,25 +30,23 @@ export default function AdminCommentsSection() {
     fetchComments();
   }, []);
 
-  // Approve a comment
   const handleApprove = async (id) => {
     try {
       await api.put(`/comments/${id}/approve`);
       fetchComments();
     } catch (err) {
-      console.error(err);
+      console.error("❌ Error approving comment:", err);
       alert("Failed to approve comment");
     }
   };
 
-  // Delete a comment
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this comment?")) return;
     try {
       await api.delete(`/comments/${id}`);
       fetchComments();
     } catch (err) {
-      console.error(err);
+      console.error("❌ Error deleting comment:", err);
       alert("Delete failed");
     }
   };
@@ -74,7 +70,10 @@ export default function AdminCommentsSection() {
                     ({new Date(c.created_at).toLocaleString()})
                   </span>
                   <p className="mb-1">{c.content}</p>
-                  <small className="text-gray-500">Post ID: {c.post_id}</small>
+                  <small className="text-gray-500">
+                    Post ID: {c.post_id} |{" "}
+                    {c.approved ? "✅ Approved" : "⏳ Pending"}
+                  </small>
                 </div>
                 <div className="flex gap-2">
                   {!c.approved && (
