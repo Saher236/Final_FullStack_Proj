@@ -1,5 +1,4 @@
 // client/src/components/admin/AdminCommentsSection.js
-
 import React, { useEffect, useState } from "react";
 import { api } from "../../api";
 
@@ -8,7 +7,7 @@ import { api } from "../../api";
  * Admin panel section to manage blog post comments.
  *
  * Features:
- * - Loads all comments (pending + approved)
+ * - Loads all comments for posts owned by the admin
  * - Approve comments
  * - Delete comments
  */
@@ -20,10 +19,10 @@ export default function AdminCommentsSection() {
   // Load comments from API
   const fetchComments = () => {
     setLoading(true);
-    api.get("/comments/all")
+    api.get("/comments/mine")
       .then((res) => setComments(res.data || []))
       .catch((err) => {
-        console.error(err);
+        console.error("Error loading comments:", err);
         setError("Failed to load comments");
       })
       .finally(() => setLoading(false));
@@ -61,33 +60,33 @@ export default function AdminCommentsSection() {
 
   return (
     <div className="container my-4">
-      <h5 className="mb-3">Manage Blog Comments</h5>
+      <h5 className="mb-3 font-semibold text-lg">Manage Blog Comments</h5>
       {!comments.length ? (
         <p>No comments yet.</p>
       ) : (
-        <ul className="list-group">
+        <ul className="space-y-3">
           {comments.map((c) => (
-            <li key={c.id} className="list-group-item">
-              <div className="d-flex justify-content-between align-items-start">
+            <li key={c.id} className="p-3 bg-gray-100 rounded-md">
+              <div className="flex justify-between items-start">
                 <div>
                   <strong>{c.user_name}</strong>{" "}
-                  <span className="text-muted">
+                  <span className="text-gray-500">
                     ({new Date(c.created_at).toLocaleString()})
                   </span>
                   <p className="mb-1">{c.content}</p>
-                  <small className="text-muted">Post ID: {c.post_id}</small>
+                  <small className="text-gray-500">Post ID: {c.post_id}</small>
                 </div>
-                <div className="d-flex gap-2">
+                <div className="flex gap-2">
                   {!c.approved && (
                     <button
-                      className="btn btn-sm btn-success"
+                      className="px-3 py-1 text-sm bg-green-500 text-white rounded-md hover:bg-green-600"
                       onClick={() => handleApprove(c.id)}
                     >
                       Approve
                     </button>
                   )}
                   <button
-                    className="btn btn-sm btn-danger"
+                    className="px-3 py-1 text-sm bg-red-500 text-white rounded-md hover:bg-red-600"
                     onClick={() => handleDelete(c.id)}
                   >
                     Delete

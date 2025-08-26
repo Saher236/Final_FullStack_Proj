@@ -1,58 +1,12 @@
 // server/routes/comments.js
-
-const express = require("express");
-const pool = require("../db"); // Database connection (PostgreSQL)
-const router = express.Router();
-
-/**
- * COMMENTS ROUTES
- * Provides CRUD operations for blog post comments.
- * 
- * Features:
- * - Fetch approved comments for a post
- * - Add a new comment
- * - Delete a comment (admin only)
- * - Approve a comment (admin only)
- */
+const express  = require('express');
+const auth     = require('../middleware/auth');
+const createDB = require('../db');
+const pool     = createDB();
+const router   = express.Router();
 
 /**
- * GET /api/comments/all
- * Fetch all comments (approved + pending) for admin management.
- */
-router.get("/all", async (req, res) => {
-  try {
-    const result = await pool.query(
-      "SELECT * FROM comments ORDER BY created_at DESC"
-    );
-    res.json(result.rows);
-  } catch (err) {
-    console.error("Error fetching all comments:", err.message);
-    res.status(500).json({ error: "Failed to fetch comments" });
-  }
-});
-
-/**
- * GET /api/comments/:postId
- * Fetch all approved comments for a specific blog post.
- */
-
-router.get("/:postId", async (req, res) => {
-  try {
-    const { postId } = req.params;
-    const result = await pool.query(
-      "SELECT * FROM comments WHERE post_id=$1 AND approved=true ORDER BY created_at DESC",
-      [postId]
-    );
-    res.json(result.rows);
-  } catch (err) {
-    console.error("Error fetching comments:", err.message);
-    res.status(500).json({ error: "Failed to fetch comments" });
-  }
-});
-
-/**
- * POST /api/comments
- * Add a new comment (pending approval).
+ * Public: Add new comment
  */
 router.post("/", async (req, res) => {
   try {
@@ -61,60 +15,94 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
+    console.log("📥 New comment payload:", req.body);
+
     const result = await pool.query(
-      "INSERT INTO comments (post_id, user_name, content, approved) VALUES ($1, $2, $3, false) RETURNING *",
+      `INSERT INTO comments (post_id, user_name, content, approved)
+       VALUES ($1, $2, $3, false)
+       RETURNING *`,
       [post_id, user_name, content]
     );
+
+    console.log("✅ Insert result:", result.rows[0]);
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.error("Error adding comment:", err.message);
-    res.status(500).json({ error: "Failed to add comment" });
+    console.error("❌ COMMENT INSERT ERROR:", err); // 🔥 חשוב להדפיס את כל האובייקט
+    res.status(500).json({ error: "Failed to add comment", details: err.message });
+  }
+});
+
+
+/**
+ * Public: Get comments for a post
+ */
+router.get('/:postId', async (req, res) => {
+  const { postId } = req.params;
+  try {
+    const { rows } = await pool.query(
+      `SELECT * FROM comments WHERE post_id = $1 AND approved = true ORDER BY created_at DESC`,
+      [postId]
+    );
+    res.json(rows);
+  } catch (err) {
+    console.error("COMMENT FETCH ERROR:", err);
+    res.status(500).json({ error: 'DB fetch failed', details: err.message });
   }
 });
 
 /**
- * PUT /api/comments/:id/approve
- * Approve a comment (admin action).
+ * Protected: Admin – see all comments of his posts
  */
-router.put("/:id/approve", async (req, res) => {
+router.get('/mine', auth, async (req, res) => {
   try {
-    const { id } = req.params;
-    const result = await pool.query(
-      "UPDATE comments SET approved=true WHERE id=$1 RETURNING *",
-      [id]
+    const { rows } = await pool.query(
+      `SELECT c.* 
+         FROM comments c
+         JOIN posts p ON c.post_id = p.id
+        WHERE p.user_id = $1
+        ORDER BY c.created_at DESC`,
+      [req.user.id]
     );
-
-    if (!result.rows.length) {
-      return res.status(404).json({ error: "Comment not found" });
-    }
-
-    res.json(result.rows[0]);
+    res.json(rows);
   } catch (err) {
-    console.error("Error approving comment:", err.message);
-    res.status(500).json({ error: "Failed to approve comment" });
+    console.error("ADMIN FETCH ERROR:", err);
+    res.status(500).json({ error: 'DB fetch failed', details: err.message });
   }
 });
 
 /**
- * DELETE /api/comments/:id
- * Delete a comment (admin action).
+ * Protected: Approve a comment
  */
-router.delete("/:id", async (req, res) => {
+router.put('/:id/approve', auth, async (req, res) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
-    const result = await pool.query(
-      "DELETE FROM comments WHERE id=$1 RETURNING *",
+    const { rows } = await pool.query(
+      `UPDATE comments SET approved=true WHERE id=$1 RETURNING *`,
       [id]
     );
-
-    if (!result.rows.length) {
-      return res.status(404).json({ error: "Comment not found" });
-    }
-
-    res.json({ message: "Comment deleted successfully" });
+    if (!rows.length) return res.status(404).json({ error: 'Not found' });
+    res.json(rows[0]);
   } catch (err) {
-    console.error("Error deleting comment:", err.message);
-    res.status(500).json({ error: "Failed to delete comment" });
+    console.error("COMMENT APPROVE ERROR:", err);
+    res.status(500).json({ error: 'DB update failed', details: err.message });
+  }
+});
+
+/**
+ * Protected: Delete a comment
+ */
+router.delete('/:id', auth, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const { rows } = await pool.query(
+      `DELETE FROM comments WHERE id=$1 RETURNING *`,
+      [id]
+    );
+    if (!rows.length) return res.status(404).json({ error:'Not found' });
+    res.status(204).send();
+  } catch (err) {
+    console.error("COMMENT DELETE ERROR:", err);
+    res.status(500).json({ error: 'DB delete failed', details: err.message });
   }
 });
 
