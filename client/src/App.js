@@ -43,6 +43,7 @@ export default function App() {
         <Route path="/user/:userId/about" element={<UserAboutPage />} />
         <Route path="/user/:userId/skills" element={<UserSkillsPage />} />
         <Route path="/user/:userId/blog" element={<UserBlogListPage />} />
+
         <Route path="/user/:userId/projects" element={<UserProjectsPage />} />
         <Route
           path="/user/:userId/projects/:projectId"

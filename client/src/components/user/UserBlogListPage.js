@@ -1,78 +1,50 @@
-// client/src/components/UserBlogListPage.js
-
+// client/src/components/user/UserBlogListPage.js
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { api } from "../../api";
 import UserSectionNav from "./UserSectionNav";
 
-/**
- * UserBlogListPage
- * Displays all blog posts of a specific user.
- * Features:
- * - Fetches posts by userId
- * - Shows thumbnail, title, date, preview
- * - Links to full blog post
- */
 export default function UserBlogListPage() {
   const { userId } = useParams();
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    setErr(null);
-    api
-      .get(`/posts/user/${userId}`)
-      .then((res) => setPosts(res.data))
-      .catch((e) => {
-        console.error(e);
-        setErr("Failed to load posts");
-      })
-      .finally(() => setLoading(false));
+    api.get(`/posts/user/${userId}`)
+      .then((res) => setPosts(res.data || []))
+      .catch(console.error);
   }, [userId]);
 
   return (
-    <div className="container my-5">
+    <div className="max-w-6xl mx-auto px-6 py-10">
       <UserSectionNav userId={userId} active="blog" />
-      <h1 className="mb-4">Blog</h1>
 
-      {loading && <p>Loading…</p>}
-      {err && <div className="alert alert-danger">{err}</div>}
+      <h1 className="text-3xl font-bold mb-6">Blog</h1>
 
-      <div className="row g-4">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map((p) => (
-          <div key={p.id} className="col-md-6">
-            <div className="card h-100 shadow-sm d-flex flex-column">
-              <img
-                src={p.thumbnail || "https://via.placeholder.com/400x200?text=No+Image"}
-                alt={p.title}
-                className="card-img-top"
-                style={{ objectFit: "cover", height: "200px" }}
-              />
-
-              <div className="card-body d-flex flex-column">
-                <h5 className="card-title">{p.title}</h5>
-                <p className="text-muted mb-2">
-                  {new Date(p.created_at).toLocaleDateString()}
-                </p>
-                <p className="card-text flex-grow-1">
-                  {p.content
-                    ? p.content.length > 120
-                      ? p.content.substring(0, 120) + "..."
-                      : p.content
-                    : "No preview available..."}
-                </p>
-                <Link className="btn btn-primary mt-auto w-100" to={`/blog/${p.slug}`}>
-                  Read More →
-                </Link>
-              </div>
+          <div key={p.id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
+            {p.thumbnail ? (
+              <img src={p.thumbnail} alt={p.title} className="h-48 object-cover w-full" />
+            ) : (
+              <div className="h-48 flex items-center justify-center bg-gray-100 text-gray-400">No image</div>
+            )}
+            <div className="p-4 flex flex-col flex-grow">
+              <h5 className="text-lg font-bold">{p.title}</h5>
+              <p className="text-gray-500 text-sm">{new Date(p.created_at).toLocaleDateString()}</p>
+              <p className="text-gray-700 flex-grow mt-2">
+                {p.content?.slice(0, 120) || "No preview available."}...
+              </p>
+              <Link
+                to={`/blog/${p.slug}`}
+                className="mt-4 inline-block bg-indigo-600 text-white text-sm px-4 py-2 rounded-md hover:bg-indigo-700"
+              >
+                Read More →
+              </Link>
             </div>
           </div>
         ))}
+        {!posts.length && <p className="text-gray-500 col-span-full">No posts yet.</p>}
       </div>
-
-      {!loading && !err && !posts.length && <p>No posts yet.</p>}
     </div>
   );
 }

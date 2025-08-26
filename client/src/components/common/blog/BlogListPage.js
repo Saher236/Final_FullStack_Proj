@@ -1,4 +1,4 @@
-// client/src/components/BlogListPage.js
+// // client/src/components/common/blog/BlogListPage.js
 
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -21,53 +21,57 @@ export default function BlogListPage() {
   }, []);
 
   return (
-    <div className="container my-5">
-      <h1 className="mb-4 text-center">📖 Our Blogs</h1>
-      <p className="text-center text-muted mb-5">
+    <div className="max-w-6xl mx-auto px-6 py-12">
+      {/* Page Header */}
+      <h1 className="text-4xl font-bold text-center mb-4">📖 Our Blogs</h1>
+      <p className="text-center text-gray-600 mb-10 max-w-2xl mx-auto">
         Discover our latest articles, tutorials, and thoughts on software
         development, design, and technology.
       </p>
 
-      <div className="row">
+      {/* Blog Grid */}
+      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {posts.map((p) => (
-          <div className="col-md-4 mb-4" key={p.id}>
-            <div className="card h-100 shadow-sm">
-              {/* Thumbnail */}
-              {p.thumbnail ? (
-                <img
-                  src={p.thumbnail}
-                  className="card-img-top"
-                  alt={p.title}
-                  style={{ height: "200px", objectFit: "cover" }}
-                />
-              ) : (
-                <div className="text-muted text-center py-5">
-                  No image available
-                </div>
-              )}
-
-              {/* Post details */}
-              <div className="card-body d-flex flex-column">
-                <h5 className="card-title">{p.title}</h5>
-                <p className="text-muted small">
-                  {new Date(p.created_at).toLocaleDateString()}
-                </p>
-                <p className="card-text flex-grow-1">
-                  {p.content?.slice(0, 100) || "No preview available."}...
-                </p>
-                <Link
-                  className="btn btn-primary mt-auto"
-                  to={`/blog/${p.slug}`}
-                >
-                  Read More →
-                </Link>
+          <div
+            key={p.id}
+            className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition hover-lift flex flex-col"
+          >
+            {/* Thumbnail */}
+            {p.thumbnail ? (
+              <img
+                src={p.thumbnail}
+                alt={p.title}
+                className="w-full h-auto rounded-lg mb-6 shadow-md object-contain"
+              />
+            ) : (
+              <div className="h-48 flex items-center justify-center text-gray-400 bg-gray-100">
+                No image available
               </div>
+            )}
+
+            {/* Post Content */}
+            <div className="p-6 flex flex-col flex-grow">
+              <h2 className="text-xl font-semibold mb-2">{p.title}</h2>
+              <p className="text-gray-500 text-sm mb-3">
+                {new Date(p.created_at).toLocaleDateString()}
+              </p>
+              <p className="text-gray-700 flex-grow mb-4">
+                {p.content?.slice(0, 100) || "No preview available."}...
+              </p>
+              <Link
+                to={`/blog/${p.slug}`}
+                className="mt-auto inline-block px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+              >
+                Read More →
+              </Link>
             </div>
           </div>
         ))}
 
         {!posts.length && (
-          <p className="text-center">No blog posts yet.</p>
+          <p className="text-center text-gray-500 col-span-full">
+            No blog posts yet.
+          </p>
         )}
       </div>
     </div>

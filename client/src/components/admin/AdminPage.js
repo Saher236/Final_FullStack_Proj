@@ -1,9 +1,8 @@
-// client/src/components/AdminPage.js
+// client/src/components/admin/AdminPage.js
 
 import React, { useEffect, useState } from "react";
 import { api } from "../../api";
-import AddProjectForm from "./projects/AddProjectForm";
-import EditProjectForm from "./projects/EditProjectForm";
+import AdminProjectForm from "./AdminProjectForm";
 import AdminResumeSection from "./AdminResumeSection";
 import AdminMessagesSection from "./AdminMessagesSection";
 import AdminProfileSection from "./AdminProfileSection";
@@ -12,11 +11,11 @@ import AdminBlogPage from "./AdminBlogPage";
 
 /**
  * AdminPage
- * The main admin dashboard that manages all sections:
+ * Admin Dashboard
  * - Account settings
  * - Profile (About & Skills)
  * - Resume
- * - Projects (CRUD)
+ * - Projects CRUD
  * - Messages
  * - Blog
  */
@@ -59,206 +58,174 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="container py-4">
-      <div className="d-flex align-items-center justify-content-between mb-4">
-        <h3 className="mb-0">Admin Panel</h3>
+    <div className="max-w-6xl mx-auto px-6 py-10">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold">⚙️ Admin Panel</h2>
       </div>
 
       {/* Section Tabs */}
-      <div className="card shadow-sm p-3 mb-4">
-        <div className="d-flex flex-wrap gap-2 justify-content-center">
-          <button
-            className={`btn ${
-              activeSection === "user" ? "btn-dark" : "btn-outline-dark"
-            }`}
-            onClick={() => setActiveSection("user")}
-          >
-            Account Settings
-          </button>
-          <button
-            className={`btn ${
-              activeSection === "profile" ? "btn-dark" : "btn-outline-dark"
-            }`}
-            onClick={() => setActiveSection("profile")}
-          >
-            Your Profile
-          </button>
-          <button
-            className={`btn ${
-              activeSection === "resume" ? "btn-dark" : "btn-outline-dark"
-            }`}
-            onClick={() => setActiveSection("resume")}
-          >
-            Your Resume
-          </button>
-          <button
-            className={`btn ${
-              activeSection === "projects" ? "btn-dark" : "btn-outline-dark"
-            }`}
-            onClick={() => setActiveSection("projects")}
-          >
-            Projects
-          </button>
-          <button
-            className={`btn ${
-              activeSection === "messages" ? "btn-dark" : "btn-outline-dark"
-            }`}
-            onClick={() => setActiveSection("messages")}
-          >
-            Contact Messages
-          </button>
-          <button
-            className={`btn ${
-              activeSection === "blog" ? "btn-dark" : "btn-outline-dark"
-            }`}
-            onClick={() => setActiveSection("blog")}
-          >
-            Manage Blog
-          </button>
+      <div className="bg-white shadow-md rounded-lg p-4 mb-8">
+        <div className="flex flex-wrap gap-3 justify-center">
+          {[
+            { key: "user", label: "Account Settings" },
+            { key: "profile", label: "Your Profile" },
+            { key: "resume", label: "Your Resume" },
+            { key: "projects", label: "Projects" },
+            { key: "messages", label: "Contact Messages" },
+            { key: "blog", label: "Manage Blog" },
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              className={`px-4 py-2 rounded-md font-medium transition ${
+                activeSection === tab.key
+                  ? "bg-indigo-600 text-white"
+                  : "bg-gray-100 hover:bg-gray-200"
+              }`}
+              onClick={() => setActiveSection(tab.key)}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && (
+        <div className="mb-6 p-4 rounded-md bg-red-100 text-red-700">
+          {error}
+        </div>
+      )}
 
       {/* Sections */}
       {activeSection === "user" && (
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title mb-3">Account Settings</h5>
-            <AdminUserSection />
-          </div>
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <h3 className="text-lg font-semibold mb-4">Account Settings</h3>
+          <AdminUserSection />
         </div>
       )}
 
       {activeSection === "profile" && (
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title mb-3">Your Profile (About & Skills)</h5>
-            <AdminProfileSection />
-          </div>
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <h3 className="text-lg font-semibold mb-4">Your Profile (About & Skills)</h3>
+          <AdminProfileSection />
         </div>
       )}
 
       {activeSection === "resume" && (
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title mb-3">Your Resume</h5>
-            <AdminResumeSection />
-          </div>
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <h3 className="text-lg font-semibold mb-4">Your Resume</h3>
+          <AdminResumeSection />
         </div>
       )}
 
       {activeSection === "projects" && (
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <div className="d-flex align-items-center justify-content-between mb-3">
-              <h5 className="card-title mb-0">
-                {editingProject ? "Edit Project" : "Add New Project"}
-              </h5>
-              {editingProject && (
-                <button
-                  className="btn btn-sm btn-outline-secondary"
-                  onClick={() => setEditingProject(null)}
-                >
-                  Cancel
-                </button>
-              )}
-            </div>
-
-            {editingProject ? (
-              <EditProjectForm
-                project={editingProject}
-                onUpdate={handleProjectUpdated}
-                onCancel={() => setEditingProject(null)}
-              />
-            ) : (
-              <AddProjectForm onProjectAdded={handleProjectAdded} />
-            )}
-
-            <hr className="my-4" />
-            <h5 className="card-title mb-3">Existing Projects</h5>
-
-            {projects.length === 0 ? (
-              <div className="text-muted">No projects yet.</div>
-            ) : (
-              <div className="table-responsive">
-                <table className="table table-sm align-middle">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th className="d-none d-lg-table-cell">Links</th>
-                      <th style={{ width: 130 }}>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {projects.map((p) => (
-                      <tr key={p.id}>
-                        <td>{p.title}</td>
-                        <td className="d-none d-lg-table-cell">
-                          <div className="d-flex flex-wrap gap-2">
-                            {p.github_link && (
-                              <a
-                                href={p.github_link}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="badge text-bg-dark text-decoration-none"
-                              >
-                                GitHub
-                              </a>
-                            )}
-                            {p.demo_link && (
-                              <a
-                                href={p.demo_link}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="badge text-bg-primary text-decoration-none"
-                              >
-                                Live
-                              </a>
-                            )}
-                          </div>
-                        </td>
-                        <td>
-                          <div className="d-flex gap-2">
-                            <button
-                              className="btn btn-sm btn-outline-primary"
-                              onClick={() => setEditingProject(p)}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="btn btn-sm btn-outline-danger"
-                              onClick={() => handleDelete(p.id)}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold">
+              {editingProject ? "Edit Project" : "Add New Project"}
+            </h3>
+            {editingProject && (
+              <button
+                className="px-3 py-1 rounded-md text-sm bg-gray-200 hover:bg-gray-300"
+                onClick={() => setEditingProject(null)}
+              >
+                Cancel
+              </button>
             )}
           </div>
+
+          <AdminProjectForm
+            project={editingProject}
+            onSave={(p) => {
+              editingProject
+                ? handleProjectUpdated(p)
+                : handleProjectAdded(p);
+            }}
+            onCancel={() => setEditingProject(null)}
+          />
+
+
+          <hr className="my-6" />
+          <h3 className="text-lg font-semibold mb-4">Existing Projects</h3>
+
+          {projects.length === 0 ? (
+            <div className="text-gray-500">No projects yet.</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border border-gray-200 rounded-lg">
+                <thead className="bg-gray-100 text-gray-700">
+                  <tr>
+                    <th className="p-3">Title</th>
+                    <th className="p-3 hidden lg:table-cell">Links</th>
+                    <th className="p-3 w-40">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {projects.map((p) => (
+                    <tr
+                      key={p.id}
+                      className="border-t hover:bg-gray-50 transition"
+                    >
+                      <td className="p-3">{p.title}</td>
+                      <td className="p-3 hidden lg:table-cell">
+                        <div className="flex gap-2 flex-wrap">
+                          {p.github_link && (
+                            <a
+                              href={p.github_link}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="px-2 py-1 bg-gray-800 text-white text-xs rounded-md"
+                            >
+                              GitHub
+                            </a>
+                          )}
+                          {p.demo_link && (
+                            <a
+                              href={p.demo_link}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="px-2 py-1 bg-indigo-600 text-white text-xs rounded-md"
+                            >
+                              Live
+                            </a>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <div className="flex gap-2">
+                          <button
+                            className="px-3 py-1 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-md"
+                            onClick={() => setEditingProject(p)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="px-3 py-1 text-sm bg-red-500 hover:bg-red-600 text-white rounded-md"
+                            onClick={() => handleDelete(p.id)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
 
       {activeSection === "messages" && (
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title mb-3">Contact Messages</h5>
-            <AdminMessagesSection />
-          </div>
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <h3 className="text-lg font-semibold mb-4">Contact Messages</h3>
+          <AdminMessagesSection />
         </div>
       )}
 
       {activeSection === "blog" && (
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title mb-3">Manage Blog</h5>
-            <AdminBlogPage />
-          </div>
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <h3 className="text-lg font-semibold mb-4">Manage Blog</h3>
+          <AdminBlogPage />
         </div>
       )}
     </div>

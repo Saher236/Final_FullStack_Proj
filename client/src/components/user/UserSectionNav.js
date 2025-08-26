@@ -1,4 +1,4 @@
-// client/src/components/UserSectionNav.js
+// client/src/components/user/UserSectionNav.js
 
 import React from "react";
 import { Link } from "react-router-dom";
@@ -7,30 +7,47 @@ import { Link } from "react-router-dom";
  * UserSectionNav
  * Navigation bar for user portfolio sections.
  * Features:
- * - Provides quick links to Portfolio, About, Skills, Blog, Projects
- * - Highlights the active section
- * - Includes "Contact Me" button aligned to the right
+ * - Quick links to Portfolio, About, Skills, Blog, Projects
+ * - Highlights active section
+ * - Contact button floats to the right
  */
-export default function UserSectionNav({ userId, active }) {
-  const btn = (key, to, label, extraClass = "") => (
-    <Link
-      to={to}
-      className={`btn btn-outline-secondary ${active === key ? "active" : ""} ${extraClass}`}
-    >
-      {label}
-    </Link>
-  );
+export default function UserSectionNav({ userId, active, userName }) {
+  const linkClass = (key) =>
+    `px-3 py-1 rounded-md text-sm font-medium transition ${
+      active === key
+        ? "bg-indigo-600 text-white"
+        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+    }`;
 
   return (
-    <div className="d-flex gap-2 mb-3">
-      {btn("portfolio", `/user/${userId}`, "Portfolio & Resume")}
-      {btn("about", `/user/${userId}/about`, "About")}
-      {btn("skills", `/user/${userId}/skills`, "Skills")}
-      {btn("blog", `/user/${userId}/blog`, "Blog")}
-      {btn("projects", `/user/${userId}/projects`, "All Projects")}
+    <div className="flex flex-wrap gap-2 items-center mb-6">
+      {/* Developer Name */}
+      {userName && (
+        <h2 className="text-lg font-semibold mb-3 text-gray-800">
+          👤 {userName}'s Portfolio
+        </h2>
+      )}
+      
+      <Link to={`/user/${userId}`} className={linkClass("portfolio")}>
+        Portfolio & Resume
+      </Link>
+      <Link to={`/user/${userId}/about`} className={linkClass("about")}>
+        About
+      </Link>
+      <Link to={`/user/${userId}/skills`} className={linkClass("skills")}>
+        Skills
+      </Link>
+      <Link to={`/user/${userId}/blog`} className={linkClass("blog")}>
+        Blog
+      </Link>
+      <Link to={`/user/${userId}/projects`} className={linkClass("projects")}>
+        All Projects
+      </Link>
 
-      {/* Contact button on the right side */}
-      <Link to={`/contact?user=${userId}`} className="btn btn-primary ms-auto">
+      <Link
+        to={`/contact?user=${userId}`}
+        className="ml-auto px-3 py-1 rounded-md text-white bg-green-500 hover:bg-green-600 transition"
+      >
         Contact Me
       </Link>
     </div>

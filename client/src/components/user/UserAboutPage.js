@@ -1,54 +1,37 @@
-// src/components/UserAboutPage.js
+// client/src/components/user/UserAboutPage.js
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import UserSectionNav from "./UserSectionNav";
 
-/**
- * UserAboutPage
- * Shows the "About Me" section of a specific user.
- * Features:
- * - Fetches user profile from API
- * - Calculates age from birth year
- * - Displays about text, location, and spoken languages
- */
 export default function UserAboutPage() {
   const { userId } = useParams();
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
     axios
-    //  .get(`http://localhost:5000/api/profiles/user/${userId}`)
       .get(`https://final-fullstack-proj.onrender.com/api/profiles/user/${userId}`)
-    
       .then((r) => setProfile(r.data))
       .catch(console.error);
   }, [userId]);
 
-  if (!profile) return <div className="container my-5">Loading…</div>;
+  if (!profile) return <div className="max-w-5xl mx-auto px-6 py-10">Loading…</div>;
 
   const age = profile.birth_year
     ? new Date().getFullYear() - profile.birth_year
     : null;
 
-  const languages = Array.isArray(profile.languages)
-    ? profile.languages
-    : typeof profile.languages === "string"
-    ? profile.languages.split(",")
-    : [];
-
   return (
-    <div className="container my-5">
+    <div className="max-w-6xl mx-auto px-6 py-10">
       <UserSectionNav userId={userId} active="about" />
-      <h1>About Me</h1>
-      <p>{profile.about || "No about info yet."}</p>
 
-      <div className="mt-3">
+      <h1 className="text-3xl font-bold mb-6">About Me</h1>
+
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <p>{profile.about || "No about info yet."}</p>
         {age && <p><strong>Age:</strong> {age}</p>}
         {profile.location && <p><strong>Location:</strong> {profile.location}</p>}
-        {languages.length > 0 && (
-          <p><strong>Languages:</strong> {languages.join(", ")}</p>
-        )}
+        {profile.languages && <p><strong>Languages:</strong> {profile.languages}</p>}
       </div>
     </div>
   );

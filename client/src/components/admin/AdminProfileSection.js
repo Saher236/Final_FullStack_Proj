@@ -1,17 +1,11 @@
-// client/src/components/AdminProfileSection.js
+// client/src/components/admin/AdminProfileSection.js
 
 import React, { useEffect, useState } from "react";
 import { api } from "../../api";
 
 /**
  * AdminProfileSection
- * Allows the admin to update their personal profile.
- * Includes:
- * - About
- * - Skills
- * - Year of Birth (with calculated age)
- * - Location
- * - Languages
+ * Admin profile management (about, skills, birth year, location, languages).
  */
 export default function AdminProfileSection() {
   const [form, setForm] = useState({
@@ -21,15 +15,12 @@ export default function AdminProfileSection() {
     location: "",
     languages: "",
   });
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
-  // Load current profile data
   useEffect(() => {
-    api
-      .get("/profiles/mine")
+    api.get("/profiles/mine")
       .then((res) => {
         if (res.data) {
           setForm({
@@ -43,107 +34,95 @@ export default function AdminProfileSection() {
           });
         }
       })
-      .catch((err) => {
-        console.error(err);
-        setError("Failed to load profile");
-      })
-      .finally(() => setLoading(false));
+      .catch(() => setError("Failed to load profile"));
   }, []);
 
-  const change = (e) =>
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const change = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
-  // Save profile data
   const handleSave = async () => {
     setSaving(true);
     setMessage("");
     setError("");
     try {
       await api.post("/profiles/mine", form);
-      setMessage("Profile saved successfully!");
-    } catch (err) {
-      console.error(err);
+      setMessage("✅ Profile saved successfully!");
+    } catch {
       setError("Failed to save profile");
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <p>Loading profile…</p>;
-
-  // Calculate age from birth_year
   const age = form.birth_year
     ? new Date().getFullYear() - parseInt(form.birth_year)
     : null;
 
   return (
-    <div className="container mb-5">
-      <h5>Your Profile (About & Skills)</h5>
+    <div className="bg-white shadow-md rounded-lg p-6">
+      {message && <div className="mb-4 p-3 bg-green-100 text-green-700 rounded">{message}</div>}
+      {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>}
 
-      {message && <div className="alert alert-success">{message}</div>}
-      {error && <div className="alert alert-danger">{error}</div>}
+      <div className="space-y-4">
+        {/* About */}
+        <div>
+          <label className="block font-medium">About</label>
+          <textarea
+            className="mt-1 w-full border rounded-md p-2"
+            rows="3"
+            name="about"
+            value={form.about}
+            onChange={change}
+          />
+        </div>
 
-      {/* About */}
-      <div className="mb-3">
-        <label className="form-label">About</label>
-        <textarea
-          className="form-control"
-          rows="3"
-          name="about"
-          value={form.about}
-          onChange={change}
-        />
-      </div>
+        {/* Skills */}
+        <div>
+          <label className="block font-medium">Skills (comma separated)</label>
+          <input
+            className="mt-1 w-full border rounded-md p-2"
+            name="skills"
+            value={form.skills}
+            onChange={change}
+          />
+        </div>
 
-      {/* Skills */}
-      <div className="mb-3">
-        <label className="form-label">Skills (comma separated)</label>
-        <input
-          className="form-control"
-          name="skills"
-          value={form.skills}
-          onChange={change}
-        />
-      </div>
+        {/* Year of Birth */}
+        <div>
+          <label className="block font-medium">Year of Birth</label>
+          <input
+            className="mt-1 w-full border rounded-md p-2"
+            name="birth_year"
+            value={form.birth_year}
+            onChange={change}
+          />
+          {age && <small className="text-gray-500">Age: {age} years</small>}
+        </div>
 
-      {/* Year of Birth */}
-      <div className="mb-3">
-        <label className="form-label">Year of Birth</label>
-        <input
-          className="form-control"
-          name="birth_year"
-          value={form.birth_year}
-          onChange={change}
-        />
-        {age && (
-          <small className="text-muted">Calculated Age: {age} years</small>
-        )}
-      </div>
+        {/* Location */}
+        <div>
+          <label className="block font-medium">Location</label>
+          <input
+            className="mt-1 w-full border rounded-md p-2"
+            name="location"
+            value={form.location}
+            onChange={change}
+          />
+        </div>
 
-      {/* Location */}
-      <div className="mb-3">
-        <label className="form-label">Location</label>
-        <input
-          className="form-control"
-          name="location"
-          value={form.location}
-          onChange={change}
-        />
-      </div>
-
-      {/* Languages */}
-      <div className="mb-3">
-        <label className="form-label">Languages (comma separated)</label>
-        <input
-          className="form-control"
-          name="languages"
-          value={form.languages}
-          onChange={change}
-        />
+        {/* Languages */}
+        <div>
+          <label className="block font-medium">Languages (comma separated)</label>
+          <input
+            className="mt-1 w-full border rounded-md p-2"
+            name="languages"
+            value={form.languages}
+            onChange={change}
+          />
+        </div>
       </div>
 
       <button
-        className="btn btn-success"
+        className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
         onClick={handleSave}
         disabled={saving}
       >

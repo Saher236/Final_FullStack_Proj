@@ -22,35 +22,34 @@ export default function AboutPage() {
       .catch((err) => console.error("Error fetching users:", err));
   }, []);
 
+  
   return (
-    <div className="container my-5">
-      <h1 className="mb-4">About Us</h1>
-      <p className="lead">
-        Meet our team! Each admin brings a unique background, passion, and
-        expertise in software development.
+    <div className="max-w-6xl mx-auto px-6 py-16">
+      <h1 className="text-4xl font-bold text-center mb-6">About Us</h1>
+      <p className="text-lg text-gray-600 text-center mb-12">
+        Meet our team! Each admin brings unique skills and expertise.
       </p>
-      <div className="row mt-4">
+      <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
         {users.map((u) => (
-          <div key={u.id} className="col-md-6 mb-4">
-            <div className="card shadow-sm p-3 h-100 text-center">
-              <img
-                src={u.avatar_url || "https://via.placeholder.com/150"}
-                alt={u.first_name}
-                className="rounded-circle mx-auto mb-3"
-                style={{ width: 120, height: 120, objectFit: "cover" }}
-              />
-              <h5>
-                {u.first_name} {u.last_name}
-              </h5>
-              <p className="text-muted">@{u.username}</p>
-              <p>
-                {u.email ? (
-                  <a href={`mailto:${u.email}`}>{u.email}</a>
-                ) : (
-                  "No public email"
-                )}
-              </p>
-            </div>
+          <div key={u.id} className="bg-white shadow-lg rounded-xl p-6 text-center hover-lift">
+            <img
+              src={u.avatar_url || "https://via.placeholder.com/150"}
+              alt={u.first_name}
+              className="rounded-full mx-auto mb-4 w-28 h-28 object-cover shadow-md"
+            />
+            <h5 className="text-xl font-semibold">
+              {u.first_name} {u.last_name}
+            </h5>
+            <p className="text-gray-500">@{u.username}</p>
+            <p className="mt-2">
+              {u.email ? (
+                <a href={`mailto:${u.email}`} className="text-indigo-600 hover:underline">
+                  {u.email}
+                </a>
+              ) : (
+                <span className="text-gray-400">No public email</span>
+              )}
+            </p>
           </div>
         ))}
       </div>

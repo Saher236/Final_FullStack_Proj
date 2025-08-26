@@ -1,4 +1,4 @@
-// client/src/components/LoginPage.js
+// client/src/components/auth/LoginPage.js
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -6,11 +6,12 @@ import { api, setAuthToken } from "../../api";
 
 /**
  * LoginPage
- * Simple login form for admins.
+ * Modern login form for admins.
  * Features:
- * - Sends username and password to /auth/login
+ * - Validates input fields
+ * - Sends credentials to backend (/auth/login)
  * - Stores JWT token in localStorage
- * - Sets token in axios headers for authenticated requests
+ * - Configures axios with token for authenticated requests
  * - Redirects to admin panel on success
  */
 export default function LoginPage() {
@@ -23,6 +24,7 @@ export default function LoginPage() {
   const submit = async (e) => {
     e.preventDefault();
     setError("");
+
     try {
       const { data } = await api.post("/auth/login", { username, password });
 
@@ -34,32 +36,52 @@ export default function LoginPage() {
       navigate("/admin", { replace: true });
     } catch (err) {
       console.error(err);
-      setError("Login failed");
+      setError("❌ Login failed. Please check your credentials.");
     }
   };
 
   return (
-    <div className="container my-5" style={{ maxWidth: 420 }}>
-      <h1>Login</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500">
+      <div className="w-full max-w-md bg-white/10 backdrop-blur-lg rounded-2xl shadow-lg p-8">
+        <h1 className="text-3xl font-bold text-center mb-6 text-white">
+          Admin Login
+        </h1>
 
-      {error && <div className="alert alert-danger">{error}</div>}
+        {error && (
+          <div className="mb-4 p-3 rounded-md bg-red-100 text-red-700 text-sm">
+            {error}
+          </div>
+        )}
 
-      <form onSubmit={submit}>
-        <input
-          className="form-control mb-2"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          className="form-control mb-2"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button className="btn btn-primary w-100">Login</button>
-      </form>
+        <form onSubmit={submit} className="space-y-4">
+          {/* Username */}
+          <input
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+
+          {/* Password */}
+          <input
+            type="password"
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          {/* Login Button */}
+          <button
+            type="submit"
+            className="w-full py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md transition"
+          >
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
