@@ -8,6 +8,7 @@ import AdminMessagesSection from "./AdminMessagesSection";
 import AdminProfileSection from "./AdminProfileSection";
 import AdminUserSection from "./AdminUserSection";
 import AdminBlogPage from "./AdminBlogPage";
+import AdminCommentsSection from "./AdminCommentsSection"; // ✅ NEW
 
 /**
  * AdminPage
@@ -18,6 +19,7 @@ import AdminBlogPage from "./AdminBlogPage";
  * - Projects CRUD
  * - Messages
  * - Blog
+ * - Comments
  */
 export default function AdminPage() {
   const [projects, setProjects] = useState([]);
@@ -40,7 +42,7 @@ export default function AdminPage() {
     fetchProjects();
   }, []);
 
-  // CRUD project handlers
+  // CRUD handlers
   const handleProjectAdded = (p) => setProjects((prev) => [p, ...prev]);
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure?")) return;
@@ -73,6 +75,7 @@ export default function AdminPage() {
             { key: "projects", label: "Projects" },
             { key: "messages", label: "Contact Messages" },
             { key: "blog", label: "Manage Blog" },
+            { key: "comments", label: "Comments" },
           ].map((tab) => (
             <button
               key={tab.key}
@@ -142,7 +145,6 @@ export default function AdminPage() {
             }}
             onCancel={() => setEditingProject(null)}
           />
-
 
           <hr className="my-6" />
           <h3 className="text-lg font-semibold mb-4">Existing Projects</h3>
@@ -226,6 +228,13 @@ export default function AdminPage() {
         <div className="bg-white shadow-md rounded-lg p-6">
           <h3 className="text-lg font-semibold mb-4">Manage Blog</h3>
           <AdminBlogPage />
+        </div>
+      )}
+
+      {activeSection === "comments" && (
+        <div className="bg-white shadow-md rounded-lg p-6">
+          <h3 className="text-lg font-semibold mb-4">Manage Comments</h3>
+          <AdminCommentsSection />
         </div>
       )}
     </div>

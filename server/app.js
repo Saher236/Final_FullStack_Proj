@@ -11,6 +11,8 @@ const resumeRoutes   = require('./routes/resumes');
 const contactsRoutes = require('./routes/contacts');
 const postRoutes     = require('./routes/posts');
 const profileRoutes  = require('./routes/profiles');
+const commentsRoutes = require("./routes/comments");
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -28,6 +30,7 @@ app.use('/api/resumes', resumeRoutes);
 app.use('/api/contacts', contactsRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/profiles', profileRoutes);
+app.use("/api/comments", commentsRoutes);
 
 // Health check
 app.get('/', (req, res) => {
