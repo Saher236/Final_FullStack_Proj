@@ -9,7 +9,6 @@ async function seedUsers() {
   const users = [
     { username: 'saher',  password: 'saher',  role: 'admin', email: 'saher@example.com',  first_name: 'Saher',  last_name: 'Jammal' },
     { username: 'kareem', password: 'kareem', role: 'admin', email: 'kareem@example.com', first_name: 'Kareem', last_name: 'Hussien' },
-    { username: 'gadi',   password: 'gadi',   role: 'user',  email: 'gadi@example.com',   first_name: 'Gadi',   last_name: 'Shor' },
   ];
 
   for (const u of users) {

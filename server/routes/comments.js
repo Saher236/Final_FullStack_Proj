@@ -14,9 +14,6 @@ router.post("/", async (req, res) => {
     if (!post_id || !user_name || !content) {
       return res.status(400).json({ error: "Missing required fields" });
     }
-
-    console.log("📥 New comment payload:", req.body);
-
     const result = await pool.query(
       `INSERT INTO comments (post_id, user_name, content, approved)
        VALUES ($1, $2, $3, false)
@@ -27,7 +24,6 @@ router.post("/", async (req, res) => {
     console.log("✅ Insert result:", result.rows[0]);
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.error("❌ COMMENT INSERT ERROR:", err); // 🔥 חשוב להדפיס את כל האובייקט
     res.status(500).json({ error: "Failed to add comment", details: err.message });
   }
 });
@@ -42,23 +38,7 @@ router.get("/all", async (req, res) => {
     );
     res.json(result.rows);
   } catch (err) {
-    console.error("❌ Error fetching all comments:", err.message);
     res.status(500).json({ error: "Failed to fetch comments" });
-  }
-});
-
-router.get('/mine', auth, async (req, res) => {
-  try {
-    const { rows } = await pool.query(
-      `SELECT c.*, p.user_id
-         FROM comments c
-         JOIN posts p ON c.post_id = p.id
-        ORDER BY c.created_at DESC`
-    );
-    res.json(rows);
-  } catch (err) {
-    console.error("ADMIN FETCH ERROR:", err);
-    res.status(500).json({ error: 'DB fetch failed', details: err.message });
   }
 });
 
@@ -73,7 +53,6 @@ router.get("/:postId", async (req, res) => {
     );
     res.json(result.rows);
   } catch (err) {
-    console.error("❌ Error fetching comments:", err.message);
     res.status(500).json({ error: "Failed to fetch comments" });
   }
 });
@@ -91,7 +70,6 @@ router.put('/:id/approve', auth, async (req, res) => {
     if (!rows.length) return res.status(404).json({ error: 'Not found' });
     res.json(rows[0]);
   } catch (err) {
-    console.error("COMMENT APPROVE ERROR:", err);
     res.status(500).json({ error: 'DB update failed', details: err.message });
   }
 });
@@ -109,7 +87,6 @@ router.delete('/:id', auth, async (req, res) => {
     if (!rows.length) return res.status(404).json({ error:'Not found' });
     res.status(204).send();
   } catch (err) {
-    console.error("COMMENT DELETE ERROR:", err);
     res.status(500).json({ error: 'DB delete failed', details: err.message });
   }
 });

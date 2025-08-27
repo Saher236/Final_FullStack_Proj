@@ -20,7 +20,6 @@ export default function AdminCommentsSection() {
     api.get("/comments/all")
       .then((res) => setComments(res.data || []))
       .catch((err) => {
-        console.error("❌ Error loading comments:", err);
         setError("Failed to load comments");
       })
       .finally(() => setLoading(false));
@@ -35,7 +34,6 @@ export default function AdminCommentsSection() {
       await api.put(`/comments/${id}/approve`);
       fetchComments();
     } catch (err) {
-      console.error("❌ Error approving comment:", err);
       alert("Failed to approve comment");
     }
   };
@@ -46,7 +44,6 @@ export default function AdminCommentsSection() {
       await api.delete(`/comments/${id}`);
       fetchComments();
     } catch (err) {
-      console.error("❌ Error deleting comment:", err);
       alert("Delete failed");
     }
   };
