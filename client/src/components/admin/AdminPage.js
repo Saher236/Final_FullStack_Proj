@@ -8,7 +8,7 @@ import AdminMessagesSection from "./AdminMessagesSection";
 import AdminProfileSection from "./AdminProfileSection";
 import AdminUserSection from "./AdminUserSection";
 import AdminBlogPage from "./AdminBlogPage";
-import AdminCommentsSection from "./AdminCommentsSection"; // ✅ NEW
+import AdminCommentsSection from "./AdminCommentsSection";
 
 /**
  * AdminPage
