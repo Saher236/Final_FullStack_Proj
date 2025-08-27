@@ -54,7 +54,6 @@ export default function BlogPostPage() {
       setNewComment({ user_name: "", content: "" });
       setMessage("✅ Your comment has been submitted and is pending approval.");
     } catch (err) {
-      console.error("❌ Error submitting comment:", err.response?.data || err.message);
       setMessage("❌ Failed to submit comment. Please try again.");
     }
   };
@@ -69,7 +68,7 @@ export default function BlogPostPage() {
           onClick={() => navigate(-1)}
           className="mb-6 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
         >
-          ← Back to Projects
+          ← Back to Blogs
         </button>
         {/* Title */}
         <h1 className="text-4xl font-bold mb-3 text-gray-800">{post.title}</h1>
