@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
 });
 
 // Protected: only the logged-in admin can view their own messages
-router.get('/mine', auth, async (req, res) => {
+router.get('/users', auth, async (req, res) => {
   const result = await pool.query(
     'SELECT * FROM contacts WHERE user_id = $1 ORDER BY created_at DESC',
     [req.user.id]
